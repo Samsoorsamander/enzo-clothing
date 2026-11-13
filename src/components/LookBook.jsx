@@ -1,21 +1,53 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import ProductModal from "./ProductModal";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const looks = [
-  { id: 1, name: "Look 01", image: "/images/lookbook/look-01.jpg" },
-  { id: 2, name: "Look 02", image: "/images/lookbook/look-02.jpg" },
-  { id: 3, name: "Look 03", image: "/images/lookbook/look-03.jpg" },
-  { id: 4, name: "Look 04", image: "/images/lookbook/look-04.jpg" },
-  { id: 5, name: "Look 05", image: "/images/lookbook/look-05.jpg" },
-  { id: 6, name: "Look 06", image: "/images/lookbook/look-06.jpg" },
+  {
+    id: 1,
+    name: "Look 01",
+    image: "/images/lookbook/look-01.jpg",
+    price: "$480",
+  },
+  {
+    id: 2,
+    name: "Look 02",
+    image: "/images/lookbook/look-02.jpg",
+    price: "$260",
+  },
+  {
+    id: 3,
+    name: "Look 03",
+    image: "/images/lookbook/look-03.jpg",
+    price: "$320",
+  },
+  {
+    id: 4,
+    name: "Look 04",
+    image: "/images/lookbook/look-04.jpg",
+    price: "$290",
+  },
+  {
+    id: 5,
+    name: "Look 05",
+    image: "/images/lookbook/look-05.jpg",
+    price: "$540",
+  },
+  {
+    id: 6,
+    name: "Look 06",
+    image: "/images/lookbook/look-06.jpg",
+    price: "$210",
+  },
 ];
 
 export default function LookBook() {
   const section = useRef(null);
+  const [selected, setSelected] = useState(null);
 
   useGSAP(
     () => {
@@ -24,7 +56,6 @@ export default function LookBook() {
       cards.forEach((card) => {
         const inner = card.querySelector(".look-inner");
 
-        // Mask wipe on the image
         gsap.fromTo(
           inner,
           { clipPath: "inset(100% 0% 0% 0%)" },
@@ -40,7 +71,6 @@ export default function LookBook() {
           },
         );
 
-        // Info text fades up
         const info = card.querySelector(".look-info");
         gsap.fromTo(
           info,
@@ -75,6 +105,7 @@ export default function LookBook() {
           <article
             className={`look-card ${i % 2 === 1 ? "offset" : ""}`}
             key={look.id}
+            onClick={() => setSelected(look)}
           >
             <div className="look-inner">
               <div className="look-image">
@@ -92,6 +123,8 @@ export default function LookBook() {
           </article>
         ))}
       </div>
+
+      <ProductModal product={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
