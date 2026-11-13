@@ -17,7 +17,7 @@ export default function Unfold() {
         scrollTrigger: {
           trigger: section.current,
           start: "top top",
-          end: "+=150%",
+          end: window.innerWidth < 768 ? "+=100%" : "+=150%",
           scrub: 1,
           pin: true,
         },
