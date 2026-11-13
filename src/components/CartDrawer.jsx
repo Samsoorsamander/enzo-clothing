@@ -3,8 +3,16 @@ import gsap from "gsap";
 import { useCart } from "../context/CartContext";
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQty, total, count } =
-    useCart();
+  const {
+    items,
+    isOpen,
+    closeCart,
+    removeItem,
+    updateQty,
+    total,
+    count,
+    checkout,
+  } = useCart();
   const drawerRef = useRef(null);
   const overlayRef = useRef(null);
 
@@ -113,7 +121,9 @@ export default function CartDrawer() {
               <span>${total.toFixed(2)}</span>
             </div>
             <p className="cart-note">Shipping calculated at checkout.</p>
-            <button className="cart-checkout">Checkout</button>
+            <button className="cart-checkout" onClick={checkout}>
+              Checkout
+            </button>
           </div>
         )}
       </aside>
