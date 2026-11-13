@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import HangingRack from "./components/HangingRack";
 import Unfold from "./components/Unfold";
 import Lookbook from "./components/LookBook";
+import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
           <Unfold />
           <Lookbook />
         </main>
+
+        <Footer />
       </div>
     </SmoothScroll>
   );
