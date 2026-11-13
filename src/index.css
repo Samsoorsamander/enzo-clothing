@@ -188,3 +188,156 @@ body {
   font-style: italic;
   color: #1a1a1a;
 }
+/* ---------- Unfold ---------- */
+.unfold {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: #ede7df;
+  overflow: hidden;
+}
+
+.unfold-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60vh;
+}
+
+.unfold-box {
+  position: absolute;
+  z-index: 2;
+}
+
+.unfold-garment {
+  position: relative;
+  z-index: 1;
+  will-change: clip-path, transform;
+}
+
+.unfold-label {
+  position: absolute;
+  bottom: 80px;
+  left: 48px;
+  max-width: 320px;
+}
+
+.unfold-kicker {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  margin-bottom: 12px;
+}
+
+.unfold-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.unfold-desc {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  opacity: 0.7;
+  font-weight: 300;
+}
+/* ---------- Lookbook ---------- */
+.lookbook {
+  padding: 120px 48px;
+  background: #f5f0eb;
+}
+
+.lookbook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 80px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+}
+
+.lookbook-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #1a1a1a;
+}
+
+.lookbook-sub {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a7a65;
+}
+
+.lookbook-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px 40px;
+}
+
+.look-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.look-card.offset {
+  margin-top: 80px;
+}
+
+.look-inner {
+  overflow: hidden;
+  will-change: clip-path;
+}
+
+.look-image {
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.look-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(26, 26, 26, 0.15);
+}
+
+.look-name {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #1a1a1a;
+}
+
+.look-view {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  transition: transform 0.3s ease;
+}
+
+.look-card:hover .look-view {
+  transform: translateX(4px);
+}
