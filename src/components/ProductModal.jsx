@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useCart } from "./CartContext";
+import { useCart } from "../context/CartContext";
 
 export default function ProductModal({ product, onClose }) {
   const overlayRef = useRef(null);
