@@ -1204,3 +1204,119 @@ html.lenis body {
     padding-right: 20px;
   }
 }
+/* ---------- Order Success ---------- */
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  background: #f5f0eb;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.success-content {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-check {
+  margin-bottom: 32px;
+}
+
+.success-kicker {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  margin-bottom: 16px;
+}
+
+.success-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.success-desc {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: #1a1a1a;
+  opacity: 0.7;
+  margin-bottom: 40px;
+  max-width: 440px;
+}
+
+.success-meta {
+  display: flex;
+  gap: 40px;
+  padding: 24px 0;
+  margin-bottom: 40px;
+  border-top: 1px solid rgba(26, 26, 26, 0.15);
+  border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+  width: 100%;
+  justify-content: center;
+}
+
+.success-meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.success-meta-label {
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a7a65;
+}
+
+.success-meta-value {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+}
+
+.success-continue {
+  background: #1a1a1a;
+  color: #f5f0eb;
+  border: none;
+  padding: 18px 40px;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.success-continue:hover {
+  background: #8a7a65;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .success-overlay {
+    padding: 24px;
+  }
+  .success-meta {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
