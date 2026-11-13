@@ -12,11 +12,13 @@ export function CartProvider({ children }) {
     try {
       const saved = localStorage.getItem("enzo-cart");
       if (saved) setItems(JSON.parse(saved));
+
+      const savedOrder = localStorage.getItem("enzo-last-order");
+      if (savedOrder) setLastOrder(JSON.parse(savedOrder));
     } catch (e) {
       console.warn("Cart load failed:", e);
     }
   }, []);
-
   // Save on every change
   useEffect(() => {
     try {
