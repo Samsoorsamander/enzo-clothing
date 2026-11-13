@@ -922,3 +922,285 @@ html.lenis body {
     gap: 20px;
   }
 }
+/* ---------- Cart Button (in nav) ---------- */
+.cart-button {
+  background: transparent;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cart-button:hover {
+  opacity: 0.5;
+}
+
+.cart-badge {
+  background: #1a1a1a;
+  color: #f5f0eb;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  letter-spacing: 0;
+}
+
+/* ---------- Cart Overlay ---------- */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 900;
+  cursor: pointer;
+}
+
+/* ---------- Cart Drawer ---------- */
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  background: #f5f0eb;
+  z-index: 901;
+  transform: translateX(100%);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.15);
+}
+
+.cart-header {
+  padding: 32px 32px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+}
+
+.cart-kicker {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  margin-bottom: 6px;
+}
+
+.cart-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.cart-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #1a1a1a;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.cart-close:hover {
+  transform: rotate(90deg);
+}
+
+.cart-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  color: #1a1a1a;
+}
+
+.cart-empty p {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.cart-empty-sub {
+  font-size: 13px;
+  opacity: 0.5;
+  font-family: "Inter", sans-serif !important;
+  font-style: normal !important;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+  align-items: center;
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 100px;
+  overflow: hidden;
+  background: #e6ddd0;
+}
+
+.cart-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cart-item-name {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: #1a1a1a;
+}
+
+.cart-item-price {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  color: #8a7a65;
+}
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cart-item-qty button {
+  background: transparent;
+  border: 1px solid rgba(26, 26, 26, 0.25);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.cart-item-qty button:hover {
+  background: #1a1a1a;
+  color: #f5f0eb;
+}
+
+.cart-item-qty span {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.cart-item-remove {
+  background: transparent;
+  border: none;
+  color: #8a7a65;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.cart-item-remove:hover {
+  color: #1a1a1a;
+}
+
+.cart-footer {
+  padding: 24px 32px 32px;
+  border-top: 1px solid rgba(26, 26, 26, 0.15);
+  background: #f5f0eb;
+}
+
+.cart-subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+}
+
+.cart-note {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: #8a7a65;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+
+.cart-checkout {
+  width: 100%;
+  background: #1a1a1a;
+  color: #f5f0eb;
+  border: none;
+  padding: 18px;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cart-checkout:hover {
+  background: #8a7a65;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .cart-drawer {
+    max-width: 100%;
+  }
+  .cart-header,
+  .cart-body,
+  .cart-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
