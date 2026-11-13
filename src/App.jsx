@@ -9,51 +9,58 @@ import SmoothScroll from "./components/SmoothScroll";
 import Preloader from "./components/Preloader";
 import Cursor from "./components/Cursor";
 import Marquee from "./components/Marquee";
+import CartDrawer from "./components/CartDrawer";
+import CartButton from "./components/CartButton";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <SmoothScroll>
-      <Preloader onComplete={() => setLoaded(true)} />
-      <Cursor />
+    <CartProvider>
+      <SmoothScroll>
+        <Preloader onComplete={() => setLoaded(true)} />
+        <Cursor />
+        <CartDrawer />
 
-      <div className="app">
-        <header className="nav">
-          <Logo size={28} />
-          <nav className="nav-links">
-            <a href="#shop">Shop</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-          </nav>
-        </header>
+        <div className="app">
+          <header className="nav">
+            <Logo size={28} />
+            <nav className="nav-links">
+              <a href="#shop">Shop</a>
+              <a href="#about">About</a>
+              <a href="#contact">Contact</a>
+              <CartButton />
+            </nav>
+          </header>
 
-        <main>
-          <Hero />
-          <HangingRack />
+          <main>
+            <Hero />
+            <HangingRack />
 
-          <Marquee
-            text="ENZO · SS26 · WEAR THE FUTURE · "
-            speed={28}
-            direction={1}
-            variant="dark"
-          />
+            <Marquee
+              text="ENZO · SS26 · WEAR THE FUTURE · "
+              speed={28}
+              direction={1}
+              variant="dark"
+            />
 
-          <Unfold />
+            <Unfold />
 
-          <Marquee
-            text="HAND-FINISHED · SMALL BATCH · SS26 · "
-            speed={32}
-            direction={-1}
-            variant="cream"
-          />
+            <Marquee
+              text="HAND-FINISHED · SMALL BATCH · SS26 · "
+              speed={32}
+              direction={-1}
+              variant="cream"
+            />
 
-          <LookBook />
-        </main>
+            <LookBook />
+          </main>
 
-        <Footer />
-      </div>
-    </SmoothScroll>
+          <Footer />
+        </div>
+      </SmoothScroll>
+    </CartProvider>
   );
 }
 
