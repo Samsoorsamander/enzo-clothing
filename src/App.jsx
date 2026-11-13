@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Logo from "./components/Logo";
 import Hero from "./components/Hero";
 import HangingRack from "./components/HangingRack";
@@ -11,15 +12,31 @@ import Cursor from "./components/Cursor";
 import Marquee from "./components/Marquee";
 import CartDrawer from "./components/CartDrawer";
 import CartButton from "./components/CartButton";
-import { CartProvider } from "./context/CartContext";
 import OrderSuccess from "./components/OrderSuccess";
+import About from "./pages/About";
+import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
 
-function App() {
+function HomePage() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <>
+      <Hero />
+      <HangingRack />
+      <Marquee
+        text="ENZO · SS26 · WEAR THE FUTURE · "
+        speed={28}
+        direction={1}
+        variant="dark"
+      />
+      <Unfold />
+      <Marquee
+        text="HAND-FINISHED · SMALL BATCH · SS26 · "
+        speed={32}
+        direction={-1}
+        variant="cream"
+      />
+      <LookBook />
+    </>
   );
 }
 
@@ -36,36 +53,22 @@ function AppContent() {
 
       <div className="app">
         <header className="nav">
-          <Logo size={28} />
+          <a href="/" aria-label="Enzo home">
+            <Logo size={28} />
+          </a>
           <nav className="nav-links">
-            <a href="#shop">Shop</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="/#shop">Shop</a>
+            <a href="/about">About</a>
+            <a href="/#contact">Contact</a>
             <CartButton />
           </nav>
         </header>
 
         <main>
-          <Hero />
-          <HangingRack />
-
-          <Marquee
-            text="ENZO · SS26 · WEAR THE FUTURE · "
-            speed={28}
-            direction={1}
-            variant="dark"
-          />
-
-          <Unfold />
-
-          <Marquee
-            text="HAND-FINISHED · SMALL BATCH · SS26 · "
-            speed={32}
-            direction={-1}
-            variant="cream"
-          />
-
-          <LookBook />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
         </main>
 
         <Footer />
@@ -73,4 +76,15 @@ function AppContent() {
     </SmoothScroll>
   );
 }
+
+function App() {
+  return (
+    <CartProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </CartProvider>
+  );
+}
+
 export default App;
