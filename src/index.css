@@ -1756,3 +1756,110 @@ html.lenis body {
     padding-right: 24px;
   }
 }
+@media (max-width: 768px) {
+  .lookbook {
+    padding: 80px 20px;
+  }
+  .lookbook-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .look-card.offset {
+    margin-top: 0;
+  }
+  .lookbook-title {
+    font-size: 2.2rem;
+  }
+  .lookbook-sub {
+    font-size: 10px;
+  }
+}
+/* ---------- Mobile Global Overrides ---------- */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Nav */
+  .nav {
+    padding: 16px 20px;
+  }
+  .nav-links {
+    gap: 16px;
+  }
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .cart-button span:first-child {
+    display: none;
+  }
+
+  /* Modal: full-screen on mobile */
+  .modal-overlay {
+    padding: 0;
+  }
+  .modal-content {
+    grid-template-columns: 1fr;
+    max-height: 100vh;
+    max-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+  .modal-image {
+    height: 45vh;
+  }
+  .modal-info {
+    padding: 32px 20px;
+  }
+  .modal-title {
+    font-size: 1.8rem;
+  }
+
+  /* Cart */
+  .cart-drawer {
+    max-width: 100%;
+  }
+  .cart-header,
+  .cart-body,
+  .cart-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  /* Contact */
+  .contact {
+    padding: 80px 20px;
+  }
+  .contact-field input,
+  .contact-field textarea {
+    font-size: 16px;
+    padding: 14px 0;
+  }
+  .contact-submit {
+    width: 100%;
+    padding: 20px;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 80px 20px 32px;
+  }
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .footer-links {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .footer-watermark {
+    font-size: 45vw;
+  }
+}

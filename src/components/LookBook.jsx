@@ -74,7 +74,7 @@ export default function LookBook() {
         const info = card.querySelector(".look-info");
         gsap.fromTo(
           info,
-          { y: 20, opacity: 0 },
+          { y: window.innerWidth < 768 ? 12 : 20, opacity: 0 },
           {
             y: 0,
             opacity: 1,
