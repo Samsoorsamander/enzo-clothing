@@ -20,6 +20,7 @@ export default function Unfold() {
           end: window.innerWidth < 768 ? "+=100%" : "+=150%",
           scrub: 1,
           pin: true,
+          invalidateOnRefresh: true,
         },
       });
 
