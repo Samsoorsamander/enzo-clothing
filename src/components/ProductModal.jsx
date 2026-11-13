@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useCart } from "../context/CartContext";
 
 export default function ProductModal({ product, onClose }) {
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (!product) return;
@@ -87,7 +89,20 @@ export default function ProductModal({ product, onClose }) {
             </div>
           </div>
 
-          <button className="modal-add">Add to Cart</button>
+          <button
+            className="modal-add"
+            onClick={() => {
+              addItem({
+                id: product.id,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+              });
+              onClose();
+            }}
+          >
+            Add to Cart
+          </button>
           <p className="modal-note">
             Free shipping on orders over $250. Ships within 3–5 business days.
           </p>
