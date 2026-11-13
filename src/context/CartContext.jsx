@@ -64,16 +64,40 @@ export function CartProvider({ children }) {
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
+  const checkout = () => {
+    if (items.length === 0) return;
 
+    const order = {
+      id: String(Math.floor(10000000 + Math.random() * 90000000)),
+      total: total,
+      count: count,
+      items: items,
+      date: new Date().toISOString(),
+    };
+
+    setLastOrder(order);
+    localStorage.setItem("enzo-last-order", JSON.stringify(order));
+    setItems([]);
+    localStorage.removeItem("enzo-cart");
+    setIsOpen(false);
+  };
+
+  const dismissOrder = () => {
+    setLastOrder(null);
+    localStorage.removeItem("enzo-last-order");
+  };
   return (
     <CartContext.Provider
       value={{
         items,
         isOpen,
+        lastOrder,
         addItem,
         removeItem,
         updateQty,
         clearCart,
+        checkout,
+        dismissOrder,
         total,
         count,
         openCart,
