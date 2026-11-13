@@ -1702,3 +1702,29 @@ html.lenis body {
     font-size: 1.2rem;
   }
 }
+@media (max-width: 768px) {
+  .unfold {
+    height: 100vh;
+    height: 100dvh;
+  }
+  .unfold-stage {
+    height: 55vh;
+  }
+  .unfold-garment svg,
+  .unfold-garment img {
+    width: 240px;
+    height: auto;
+  }
+  .unfold-label {
+    bottom: 40px;
+    left: 24px;
+    right: 24px;
+    max-width: none;
+  }
+  .unfold-title {
+    font-size: 1.8rem;
+  }
+  .unfold-desc {
+    font-size: 13px;
+  }
+}
