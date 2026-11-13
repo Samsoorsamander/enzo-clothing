@@ -1515,3 +1515,166 @@ html.lenis body {
     padding: 20px 24px;
   }
 }
+/* ---------- Contact ---------- */
+.contact {
+  padding: 160px 48px;
+  background: #f5f0eb;
+}
+
+.contact-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.contact-header {
+  margin-bottom: 64px;
+}
+
+.contact-kicker {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  margin-bottom: 16px;
+}
+
+.contact-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.contact-desc {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: #1a1a1a;
+  opacity: 0.65;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-field label {
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a7a65;
+}
+
+.contact-field input,
+.contact-field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.25);
+  padding: 10px 0;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+  border-color: #1a1a1a;
+}
+
+.contact-field input::placeholder,
+.contact-field textarea::placeholder {
+  color: rgba(26, 26, 26, 0.35);
+}
+
+.contact-submit {
+  align-self: flex-start;
+  background: #1a1a1a;
+  color: #f5f0eb;
+  border: none;
+  padding: 18px 40px;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.contact-submit:hover:not(:disabled) {
+  background: #8a7a65;
+}
+
+.contact-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.contact-error {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  color: #b33;
+  padding: 12px 0;
+}
+
+/* Success state */
+.contact-success {
+  padding: 48px 0;
+}
+
+.contact-success-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: 2rem;
+  font-style: italic;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.contact-success-sub {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: #1a1a1a;
+  opacity: 0.65;
+  margin-bottom: 32px;
+}
+
+.contact-reset {
+  background: transparent;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+
+.contact-reset:hover {
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .contact {
+    padding: 100px 24px;
+  }
+}

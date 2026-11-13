@@ -16,6 +16,7 @@ import OrderSuccess from "./components/OrderSuccess";
 import About from "./pages/About";
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
+import Contact from "./components/Contact";
 
 function HomePage() {
   return (
@@ -36,6 +37,7 @@ function HomePage() {
         variant="cream"
       />
       <LookBook />
+      <Contact />
     </>
   );
 }

@@ -4,6 +4,12 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+// Mobile stability fixes
+ScrollTrigger.config({ ignoreMobileResize: true });
+
+if (ScrollTrigger.isTouch === 1) {
+  ScrollTrigger.normalizeScroll(true);
+}
 
 export default function SmoothScroll({ children }) {
   const lenisRef = useRef(null);
