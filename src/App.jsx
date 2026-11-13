@@ -5,7 +5,7 @@ import Unfold from "./components/Unfold";
 
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
-import Lookbook from "./components/LookBook";
+import Lookbook from "./components/Lookbook";
 
 function App() {
   return (
