@@ -7,11 +7,13 @@ import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
 import LookBook from "./components/LookBook";
 import Preloader from "./components/Preloader";
+import Cursor from "./components/Cursor";
 
 function App() {
   return (
     <SmoothScroll>
       <Preloader onComplete={() => setLoaded(true)} />
+      <Cursor />
       <div className="app">
         <header className="nav">
           <Logo size={28} />
