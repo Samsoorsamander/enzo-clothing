@@ -1678,3 +1678,27 @@ html.lenis body {
     padding: 100px 24px;
   }
 }
+@media (max-width: 768px) {
+  .rack {
+    height: 100vh;
+    height: 100dvh; /* dynamic viewport height for mobile address bar */
+  }
+  .rack-panel {
+    width: 85vw; /* wider panels so 1 fits on screen at a time */
+  }
+  .rack-garment {
+    width: 260px;
+    height: 340px;
+  }
+  .rack-header {
+    top: 80px;
+    padding: 0 20px;
+  }
+  .rack-label,
+  .rack-count {
+    font-size: 10px;
+  }
+  .rack-name {
+    font-size: 1.2rem;
+  }
+}
