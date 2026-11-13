@@ -60,7 +60,7 @@ function GarmentSVG({ shape, color }) {
   return paths[shape] || paths.coat;
 }
 
-export default function Lookbook() {
+export default function LookBook() {
   const section = useRef(null);
 
   useGSAP(

@@ -5,7 +5,7 @@ import Unfold from "./components/Unfold";
 
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
-import Lookbook from "./components/Lookbook";
+import LookBook from "./components/LookBook";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
           <Hero />
           <HangingRack />
           <Unfold />
-          <Lookbook />
+          <LookBook />
         </main>
 
         <Footer />
