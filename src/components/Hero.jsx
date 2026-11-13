@@ -27,7 +27,11 @@ export default function Hero() {
       // Garment drops from above
       tl.fromTo(
         garment.current,
-        { y: -300, opacity: 0, rotate: -8 },
+        {
+          y: window.innerWidth < 768 ? -200 : -300,
+          opacity: 0,
+          rotate: -8,
+        },
         { y: 0, opacity: 1, rotate: 0, ease: "power2.out" },
         0,
       );
