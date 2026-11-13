@@ -1863,3 +1863,12 @@ html.lenis body {
     font-size: 45vw;
   }
 }
+.pin-spacer {
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .pin-spacer {
+    padding-bottom: 0 !important;
+  }
+}
