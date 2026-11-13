@@ -1,19 +1,23 @@
+import { useState } from "react";
 import Logo from "./components/Logo";
 import Hero from "./components/Hero";
 import HangingRack from "./components/HangingRack";
 import Unfold from "./components/Unfold";
-
+import LookBook from "./components/LookBook";
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
-import LookBook from "./components/LookBook";
 import Preloader from "./components/Preloader";
 import Cursor from "./components/Cursor";
+import Marquee from "./components/Marquee";
 
 function App() {
+  const [loaded, setLoaded] = useState(false);
+
   return (
     <SmoothScroll>
       <Preloader onComplete={() => setLoaded(true)} />
       <Cursor />
+
       <div className="app">
         <header className="nav">
           <Logo size={28} />
@@ -27,7 +31,23 @@ function App() {
         <main>
           <Hero />
           <HangingRack />
+
+          <Marquee
+            text="ENZO · SS26 · WEAR THE FUTURE · "
+            speed={28}
+            direction={1}
+            variant="dark"
+          />
+
           <Unfold />
+
+          <Marquee
+            text="HAND-FINISHED · SMALL BATCH · SS26 · "
+            speed={32}
+            direction={-1}
+            variant="cream"
+          />
+
           <LookBook />
         </main>
 

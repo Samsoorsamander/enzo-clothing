@@ -1,59 +1,48 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function Marquee({
   text = "ENZO · SS26 · WEAR THE FUTURE · ",
   speed = 30,
   direction = 1,
+  variant = "dark",
 }) {
-  const section = useRef(null);
   const trackRef = useRef(null);
 
-  useGSAP(
-    () => {
-      const track = trackRef.current;
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
 
-      // Continuous scroll loop — xPercent -50 then reset instantly
-      const tween = gsap.to(track, {
-        xPercent: -50 * direction,
+    let tween;
+
+    const start = () => {
+      const halfWidth = track.scrollWidth / 2;
+      if (!halfWidth) return;
+
+      gsap.set(track, { x: direction > 0 ? 0 : -halfWidth });
+
+      tween = gsap.to(track, {
+        x: direction > 0 ? -halfWidth : 0,
         duration: speed,
         ease: "none",
         repeat: -1,
       });
+    };
 
-      // Optional: skew the track based on scroll velocity
-      const skewSetter = gsap.quickSetter(track, "skewX", "deg");
-      const clamp = gsap.utils.clamp(-8, 8);
+    // Wait one frame so flex layout + fonts have real width
+    const raf = requestAnimationFrame(start);
 
-      ScrollTrigger.create({
-        onUpdate: (self) => {
-          const skew = clamp(self.getVelocity() / -300);
-          skewSetter(skew);
-          gsap.to(track, {
-            skewX: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            overwrite: true,
-          });
-        },
-      });
+    return () => {
+      cancelAnimationFrame(raf);
+      tween?.kill();
+      gsap.set(track, { clearProps: "transform" });
+    };
+  }, [text, speed, direction]);
 
-      return () => {
-        tween.kill();
-      };
-    },
-    { scope: section },
-  );
-
-  // Render text 4 times so the loop never shows a gap
-  const items = Array.from({ length: 4 });
+  const items = Array.from({ length: 8 });
 
   return (
-    <section className="marquee" ref={section}>
+    <section className={`marquee ${variant === "cream" ? "cream" : ""}`}>
       <div className="marquee-track" ref={trackRef}>
         {items.map((_, i) => (
           <span className="marquee-item" key={i}>
