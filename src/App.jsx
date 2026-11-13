@@ -6,10 +6,12 @@ import Unfold from "./components/Unfold";
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
 import LookBook from "./components/LookBook";
+import Preloader from "./components/Preloader";
 
 function App() {
   return (
     <SmoothScroll>
+      <Preloader onComplete={() => setLoaded(true)} />
       <div className="app">
         <header className="nav">
           <Logo size={28} />
