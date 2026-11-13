@@ -101,3 +101,90 @@ body {
   color: #1a1a1a;
   opacity: 0.6;
 }
+/* ---------- Hanging Rack ---------- */
+.rack {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: #f5f0eb;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rack-header {
+  position: absolute;
+  top: 100px;
+  left: 48px;
+  right: 48px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+.rack-label,
+.rack-count {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  opacity: 0.5;
+}
+
+.rack-track {
+  display: flex;
+  width: fit-content;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  align-items: center;
+}
+
+.rack-panel {
+  width: 60vw;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* The horizontal bar each garment hangs from */
+.rack-hanger-bar {
+  position: absolute;
+  top: 12%;
+  left: 10%;
+  width: 80%;
+  height: 1.5px;
+  background: #1a1a1a;
+  opacity: 0.25;
+}
+
+.rack-garment {
+  transform-origin: top center;
+  margin-top: 8%;
+}
+
+.rack-info {
+  margin-top: 32px;
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.rack-num {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: #8a7a65;
+  letter-spacing: 0.1em;
+}
+
+.rack-name {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  color: #1a1a1a;
+}

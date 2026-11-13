@@ -1,5 +1,6 @@
 import Logo from "./components/Logo";
 import Hero from "./components/Hero";
+import HangingRack from "./components/HangingRack";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
 
       <main>
         <Hero />
+        <HangingRack />
       </main>
     </div>
   );
