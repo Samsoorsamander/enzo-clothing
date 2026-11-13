@@ -2,9 +2,10 @@ import Logo from "./components/Logo";
 import Hero from "./components/Hero";
 import HangingRack from "./components/HangingRack";
 import Unfold from "./components/Unfold";
-import Lookbook from "./components/LookBook";
+
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
+import Lookbook from "./components/LookBook";
 
 function App() {
   return (
