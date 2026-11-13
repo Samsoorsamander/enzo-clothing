@@ -18,42 +18,67 @@ export default function HangingRack() {
 
   useGSAP(
     () => {
-      const panels = gsap.utils.toArray(".rack-panel", track.current);
+      const mm = gsap.matchMedia();
 
-      // Horizontal scroll tied to vertical scroll
-      gsap.to(track.current, {
-        xPercent: -100 * (panels.length - 1),
-        ease: "none",
-        scrollTrigger: {
-          trigger: section.current,
-          pin: true,
-          scrub: 1,
-          start: "top top",
-          end: () => "+=" + track.current.offsetWidth,
-        },
+      // Desktop — full horizontal pin
+      mm.add("(min-width: 769px)", () => {
+        const panels = gsap.utils.toArray(".rack-panel", track.current);
+
+        gsap.to(track.current, {
+          xPercent: -100 * (panels.length - 1),
+          ease: "none",
+          scrollTrigger: {
+            trigger: section.current,
+            pin: true,
+            scrub: 1,
+            start: "top top",
+            end: () => "+=" + track.current.offsetWidth,
+          },
+        });
+
+        // Sway each garment on entry
+        panels.forEach((panel) => {
+          const garment = panel.querySelector(".rack-garment");
+          gsap.fromTo(
+            garment,
+            { rotate: -4, y: -10 },
+            {
+              rotate: 0,
+              y: 0,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: panel,
+                containerAnimation: ScrollTrigger.getAll().find(
+                  (st) => st.trigger === section.current,
+                )?.animation,
+                start: "left 80%",
+                end: "left 30%",
+                scrub: 1,
+              },
+            },
+          );
+        });
       });
 
-      // Subtle sway on each garment as it enters
-      panels.forEach((panel) => {
-        const garment = panel.querySelector(".rack-garment");
-        gsap.fromTo(
-          garment,
-          { rotate: -4, y: -10 },
-          {
-            rotate: 0,
-            y: 0,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: panel,
-              containerAnimation: ScrollTrigger.getAll().find(
-                (st) => st.trigger === section.current,
-              )?.animation,
-              start: "left 80%",
-              end: "left 30%",
-              scrub: 1,
-            },
+      // Mobile — same horizontal pin, tuned parameters
+      mm.add("(max-width: 768px)", () => {
+        const panels = gsap.utils.toArray(".rack-panel", track.current);
+
+        gsap.to(track.current, {
+          xPercent: -100 * (panels.length - 1),
+          ease: "none",
+          scrollTrigger: {
+            trigger: section.current,
+            pin: true,
+            // Faster scrub so shorter mobile scrolls feel responsive
+            scrub: 0.6,
+            start: "top top",
+            // Shorter pin distance on mobile — less scrolling required
+            end: () => "+=" + track.current.offsetWidth * 0.9,
+            // Recalculate on orientation change (iOS quirk)
+            invalidateOnRefresh: true,
           },
-        );
+        });
       });
     },
     { scope: section },
