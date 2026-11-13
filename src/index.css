@@ -341,3 +341,35 @@ body {
 .look-card:hover .look-view {
   transform: translateX(4px);
 }
+@media (max-width: 768px) {
+  .lookbook {
+    padding: 80px 24px;
+  }
+  .lookbook-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .look-card.offset {
+    margin-top: 0;
+  }
+  .lookbook-title {
+    font-size: 2.2rem;
+  }
+}
+/* ---------- Lenis ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
