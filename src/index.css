@@ -1872,3 +1872,12 @@ html.lenis body {
     padding-bottom: 0 !important;
   }
 }
+@media (max-width: 768px) {
+  .hero,
+  .rack,
+  .unfold {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+}
