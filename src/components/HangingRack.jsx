@@ -5,12 +5,15 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const garments = [
+// We duplicate the array to fill the space and prevent blank gaps
+const baseGarments = [
   { id: 1, name: "Oversized Coat", image: "/images/rack/coat.jpg" },
   { id: 2, name: "Silk Shirt", image: "/images/rack/shirt.jpg" },
   { id: 3, name: "Wide Trousers", image: "/images/rack/trousers.jpg" },
   { id: 4, name: "Knit Vest", image: "/images/rack/vest.jpg" },
 ];
+
+const garments = [...baseGarments, ...baseGarments, ...baseGarments]; // 12 items total
 
 export default function HangingRack() {
   const section = useRef(null);
@@ -20,23 +23,22 @@ export default function HangingRack() {
     () => {
       const mm = gsap.matchMedia();
 
-      // Desktop — full horizontal pin
       mm.add("(min-width: 769px)", () => {
         const panels = gsap.utils.toArray(".rack-panel", track.current);
 
+        // Scroll exactly 4 panels width, then the next 4 seamlessly take over
         gsap.to(track.current, {
-          xPercent: -100 * (panels.length - 1),
+          xPercent: -100 * (panels.length - 8), // Leaves 8 panels visible at the end
           ease: "none",
           scrollTrigger: {
             trigger: section.current,
             pin: true,
             scrub: 1,
             start: "top top",
-            end: () => "+=" + track.current.offsetWidth,
+            end: () => "+=" + track.current.offsetWidth * 0.8, // Tuned distance
           },
         });
 
-        // Sway each garment on entry
         panels.forEach((panel) => {
           const garment = panel.querySelector(".rack-garment");
           gsap.fromTo(
@@ -60,22 +62,17 @@ export default function HangingRack() {
         });
       });
 
-      // Mobile — same horizontal pin, tuned parameters
       mm.add("(max-width: 768px)", () => {
         const panels = gsap.utils.toArray(".rack-panel", track.current);
-
         gsap.to(track.current, {
-          xPercent: -100 * (panels.length - 1),
+          xPercent: -100 * (panels.length - 8),
           ease: "none",
           scrollTrigger: {
             trigger: section.current,
             pin: true,
-            // Faster scrub so shorter mobile scrolls feel responsive
             scrub: 0.6,
             start: "top top",
-            // Shorter pin distance on mobile — less scrolling required
-            end: () => "+=" + track.current.offsetWidth * 0.9,
-            // Recalculate on orientation change (iOS quirk)
+            end: () => "+=" + track.current.offsetWidth * 0.6,
             invalidateOnRefresh: true,
           },
         });
@@ -92,20 +89,15 @@ export default function HangingRack() {
       </div>
 
       <div className="rack-track" ref={track}>
-        {garments.map((item) => (
-          <div className="rack-panel" key={item.id}>
+        {garments.map((item, index) => (
+          <div className="rack-panel" key={`${item.id}-${index}`}>
             <div className="rack-hanger-bar" />
             <div className="rack-garment">
-              <div className="rack-garment">
-                <img
-                  src={item.image}
-                  alt={`Enzo — ${item.name}`}
-                  loading="lazy"
-                />
-              </div>
+              <img src={item.image} alt={item.name} loading="lazy" />
             </div>
             <div className="rack-info">
-              <span className="rack-num">0{item.id}</span>
+              {/* Modulo 4 so the numbers repeat 01-04 */}
+              <span className="rack-num">0{(index % 4) + 1}</span>
               <span className="rack-name">{item.name}</span>
             </div>
           </div>
