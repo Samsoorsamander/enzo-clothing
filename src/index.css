@@ -46,3 +46,58 @@ body {
 .nav-links a:hover {
   opacity: 0.5;
 }
+/* ---------- Hero ---------- */
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-text {
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-line {
+  font-family: "Bodoni Moda", serif;
+  font-size: clamp(4rem, 14vw, 12rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: #1a1a1a;
+}
+
+.line-1 {
+  transform: translateX(0);
+}
+
+.line-2 {
+  transform: translateX(0);
+  font-style: italic;
+  color: #8a7a65;
+}
+
+.hero-garment {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-sub {
+  position: absolute;
+  bottom: 60px;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  opacity: 0.6;
+}

@@ -1,4 +1,5 @@
 import Logo from "./components/Logo";
+import Hero from "./components/Hero";
 
 function App() {
   return (
@@ -11,6 +12,10 @@ function App() {
           <a href="#contact">Contact</a>
         </nav>
       </header>
+
+      <main>
+        <Hero />
+      </main>
     </div>
   );
 }
