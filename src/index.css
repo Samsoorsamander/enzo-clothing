@@ -1746,3 +1746,13 @@ html.lenis body {
     font-size: 10px;
   }
 }
+/* ---------- mobile css tunning---------- */
+@media (max-width: 768px) {
+  .marquee {
+    padding: 24px 0;
+  }
+  .marquee-item {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    padding-right: 24px;
+  }
+}
