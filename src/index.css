@@ -1728,3 +1728,21 @@ html.lenis body {
     font-size: 13px;
   }
 }
+/* ---------- Hero mobile ---------- */
+@media (max-width: 768px) {
+  .hero {
+    height: 100vh;
+    height: 100dvh;
+  }
+  .hero-line {
+    font-size: clamp(3rem, 18vw, 6rem);
+  }
+  .hero-garment svg {
+    width: 160px;
+    height: 210px;
+  }
+  .hero-sub {
+    bottom: 40px;
+    font-size: 10px;
+  }
+}
