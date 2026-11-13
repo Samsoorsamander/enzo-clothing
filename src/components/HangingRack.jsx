@@ -6,10 +6,10 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const garments = [
-  { id: 1, name: "Oversized Coat", color: "#c9b99a" },
-  { id: 2, name: "Silk Shirt", color: "#8a7a65" },
-  { id: 3, name: "Wide Trousers", color: "#a89880" },
-  { id: 4, name: "Knit Vest", color: "#b8a88a" },
+  { id: 1, name: "Oversized Coat", image: "/images/rack/coat.jpg" },
+  { id: 2, name: "Silk Shirt", image: "/images/rack/shirt.jpg" },
+  { id: 3, name: "Wide Trousers", image: "/images/rack/trousers.jpg" },
+  { id: 4, name: "Knit Vest", image: "/images/rack/vest.jpg" },
 ];
 
 export default function HangingRack() {
