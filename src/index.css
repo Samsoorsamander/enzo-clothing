@@ -1881,3 +1881,55 @@ html.lenis body {
     transform: translateZ(0);
   }
 }
+/* ---------- Rotating Garment (3D) ---------- */
+.rotating-garment {
+  height: 100vh;
+  position: relative;
+  background: #0a0a0a; /* Dark studio background to make the 3D pop */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.rotating-text {
+  position: absolute;
+  top: 120px;
+  left: 48px;
+  z-index: 10;
+  color: #f5f0eb;
+  pointer-events: none;
+}
+
+.rotating-kicker {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #8a7a65;
+  margin-bottom: 16px;
+}
+
+.rotating-title {
+  font-family: "Bodoni Moda", serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.canvas-wrapper {
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  position: relative;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .rotating-text {
+    top: 80px;
+    left: 24px;
+  }
+}
