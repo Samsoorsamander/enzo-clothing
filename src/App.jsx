@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Logo from "./components/Logo";
 import Hero from "./components/Hero";
-import HangingRack from "./components/HangingRack";
 import Unfold from "./components/Unfold";
 import LookBook from "./components/LookBook";
 import Footer from "./components/Footer";
@@ -13,31 +12,44 @@ import Marquee from "./components/Marquee";
 import CartDrawer from "./components/CartDrawer";
 import CartButton from "./components/CartButton";
 import OrderSuccess from "./components/OrderSuccess";
-import About from "./pages/About";
+import Contact from "./components/Contact";
+import ShowroomCanvas from "./components/Showroom3D/ShowroomCanvas";
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
-import Contact from "./components/Contact";
-import RotatingGarment from "./components/RotatingGarment";
-import ShowroomCanvas from "./components/Showroom3D/ShowroomCanvas";
+
+// Lazy load the About page to save initial load time
+const About = lazy(() => import("./pages/About"));
 
 function HomePage() {
   return (
     <>
       <Hero />
-      <ShowroomCanvas />
+
+      {/* The New 3D Showroom Rack */}
+      <section className="rack">
+        <div className="rack-header">
+          <span className="rack-label">The Collection</span>
+          <span className="rack-count">04 Pieces</span>
+        </div>
+        <ShowroomCanvas />
+      </section>
+
       <Marquee
         text="ENZO · SS26 · WEAR THE FUTURE · "
         speed={28}
         direction={1}
         variant="dark"
       />
-      <RotatingGarment />
+
+      <Unfold />
+
       <Marquee
         text="HAND-FINISHED · SMALL BATCH · SS26 · "
         speed={32}
         direction={-1}
         variant="cream"
       />
+
       <LookBook />
       <Contact />
     </>
@@ -69,10 +81,12 @@ function AppContent() {
         </header>
 
         <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
+          <Suspense fallback={<div style={{ minHeight: "100vh" }} />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<About />} />
+            </Routes>
+          </Suspense>
         </main>
 
         <Footer />
