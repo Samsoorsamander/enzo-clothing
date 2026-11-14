@@ -18,12 +18,13 @@ import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
 import Contact from "./components/Contact";
 import RotatingGarment from "./components/RotatingGarment";
+import ShowroomCanvas from "./components/Showroom3D/ShowroomCanvas";
 
 function HomePage() {
   return (
     <>
       <Hero />
-      <HangingRack />
+      <ShowroomCanvas />
       <Marquee
         text="ENZO · SS26 · WEAR THE FUTURE · "
         speed={28}
