@@ -17,6 +17,7 @@ import About from "./pages/About";
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
 import Contact from "./components/Contact";
+import RotatingGarment from "./components/RotatingGarment";
 
 function HomePage() {
   return (
@@ -29,7 +30,7 @@ function HomePage() {
         direction={1}
         variant="dark"
       />
-      <Unfold />
+      <RotatingGarment />
       <Marquee
         text="HAND-FINISHED · SMALL BATCH · SS26 · "
         speed={32}
