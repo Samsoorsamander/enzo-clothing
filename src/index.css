@@ -2107,3 +2107,27 @@ html.lenis body {
     align-items: flex-start;
   }
 }
+.showroom-loading {
+  width: 100%;
+  height: 70vh;
+  background: #f5f0eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showroom-loading::after {
+  content: "";
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(26, 26, 26, 0.15);
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
