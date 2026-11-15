@@ -1935,7 +1935,7 @@ html.lenis body {
 }
 
 /* =========================================
-   3D CLOTHING SHOWROOM
+   ENZO — PREMIUM 3D SHOWROOM
 ========================================= */
 
 .rack {
@@ -1946,35 +1946,30 @@ html.lenis body {
   background: #f5f1ed;
   overflow: hidden;
   isolation: isolate;
+  box-sizing: border-box;
 }
-
-/* Collection header */
 
 .rack-header {
   position: relative;
   z-index: 2;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  padding: 0;
   pointer-events: none;
 }
 
 .rack-label,
 .rack-count {
+  color: #77716c;
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #77716c;
+  white-space: nowrap;
 }
-
-.rack-count {
-  font-variant-numeric: tabular-nums;
-}
-
-/* 3D Canvas */
 
 .showroom-canvas-wrapper {
   position: relative;
@@ -1997,11 +1992,11 @@ html.lenis body {
   outline: none;
 }
 
-/* Responsive */
+/* Tablet */
 
 @media (max-width: 768px) {
   .rack {
-    min-height: 530px;
+    min-height: 550px;
     padding: 25px 18px 15px;
   }
 
@@ -2017,6 +2012,8 @@ html.lenis body {
   }
 }
 
+/* Mobile */
+
 @media (max-width: 480px) {
   .rack {
     min-height: 470px;
@@ -2027,6 +2024,8 @@ html.lenis body {
     height: 480px;
   }
 }
+
+/* Reduced motion preference */
 
 @media (prefers-reduced-motion: reduce) {
   .showroom-canvas-wrapper {
