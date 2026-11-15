@@ -1,6 +1,5 @@
 import { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Logo from "./components/Logo";
 import Hero from "./components/Hero";
 import Unfold from "./components/Unfold";
@@ -14,11 +13,11 @@ import CartDrawer from "./components/CartDrawer";
 import CartButton from "./components/CartButton";
 import OrderSuccess from "./components/OrderSuccess";
 import Contact from "./components/Contact";
-
 import ShowroomCanvas from "./components/Showroom3D/ShowroomCanvas";
+import { CartProvider } from "./context/CartContext";
+import { useCart } from "./context/CartContext";
 
-import { CartProvider, useCart } from "./context/CartContext";
-
+// Lazy load the About page to save initial load time
 const About = lazy(() => import("./pages/About"));
 
 function HomePage() {
@@ -26,17 +25,12 @@ function HomePage() {
     <>
       <Hero />
 
-      <section
-        className="rack"
-        id="shop"
-        aria-label="ENZO 3D clothing collection"
-      >
+      {/* The New 3D Showroom Rack */}
+      <section className="rack">
         <div className="rack-header">
           <span className="rack-label">The Collection</span>
-
           <span className="rack-count">04 Pieces</span>
         </div>
-
         <ShowroomCanvas />
       </section>
 
@@ -57,25 +51,20 @@ function HomePage() {
       />
 
       <LookBook />
-
       <Contact />
     </>
   );
 }
 
 function AppContent() {
-  const [, setLoaded] = useState(false);
-
+  const [loaded, setLoaded] = useState(false);
   const { lastOrder, dismissOrder } = useCart();
 
   return (
     <SmoothScroll>
       <Preloader onComplete={() => setLoaded(true)} />
-
       <Cursor />
-
       <CartDrawer />
-
       <OrderSuccess order={lastOrder} onDismiss={dismissOrder} />
 
       <div className="app">
@@ -83,7 +72,6 @@ function AppContent() {
           <a href="/" aria-label="Enzo home">
             <Logo size={28} />
           </a>
-
           <nav className="nav-links">
             <a href="/#shop">Shop</a>
             <a href="/about">About</a>
@@ -96,7 +84,6 @@ function AppContent() {
           <Suspense fallback={<div style={{ minHeight: "100vh" }} />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
-
               <Route path="/about" element={<About />} />
             </Routes>
           </Suspense>
