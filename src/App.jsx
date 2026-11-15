@@ -26,8 +26,11 @@ function HomePage() {
     <>
       <Hero />
 
-      {/* Interactive 3D Clothing Collection */}
-      <section className="rack" id="shop" aria-label="3D clothing collection">
+      <section
+        className="rack"
+        id="shop"
+        aria-label="ENZO 3D clothing collection"
+      >
         <div className="rack-header">
           <span className="rack-label">The Collection</span>
 
@@ -61,7 +64,7 @@ function HomePage() {
 }
 
 function AppContent() {
-  const [loaded, setLoaded] = useState(false);
+  const [, setLoaded] = useState(false);
 
   const { lastOrder, dismissOrder } = useCart();
 
