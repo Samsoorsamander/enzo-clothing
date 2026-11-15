@@ -1935,13 +1935,19 @@ html.lenis body {
 }
 
 /* ---------- 3D Showroom ---------- */
+
+/* ---------- 3D Showroom ---------- */
 .showroom-canvas-wrapper {
   width: 100%;
-  height: 70vh; /* Adjust this to fit your section */
+  height: 70vh;
   position: relative;
   cursor: grab;
 }
 
 .showroom-canvas-wrapper:active {
   cursor: grabbing;
+}
+
+.showroom-canvas-wrapper.focused {
+  cursor: default;
 }
