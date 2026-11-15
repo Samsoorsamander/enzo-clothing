@@ -3,25 +3,35 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 
-const RACK_ITEMS = [
-  { id: 1, color: "#ffffff", position: [-2.4, 0, 0] },
-  { id: 2, color: "#1a1a1a", position: [-0.8, 0, 0] },
-  { id: 3, color: "#8a7a65", position: [0.8, 0, 0] },
-  { id: 4, color: "#a89880", position: [2.4, 0, 0] },
-];
+// Import the items from the parent so they stay in sync
+import { RACK_ITEMS } from "./ShowroomCanvas";
 
-function HangingGarment({ item, isSelected, isAnySelected, onClick }) {
+function HangingGarment({
+  item,
+  isSelected,
+  isAnySelected,
+  onClick,
+  view,
+  selectedColor,
+}) {
   const groupRef = useRef();
+  const innerRef = useRef();
   const { scene } = useGLTF("/models/hoodie.glb");
   const clonedScene = scene.clone();
+  const materialsRef = useRef([]);
 
   // Apply color
-  clonedScene.traverse((child) => {
-    if (child.isMesh && child.material) {
-      child.material = child.material.clone();
-      child.material.color.set(item.color);
-    }
-  });
+  useEffect(() => {
+    materialsRef.current = [];
+    clonedScene.traverse((child) => {
+      if (child.isMesh && child.material) {
+        child.material = child.material.clone();
+        materialsRef.current.push(child.material);
+        // If a custom color was picked, apply it, otherwise use the item's base color
+        child.material.color.set(selectedColor || item.color);
+      }
+    });
+  }, [clonedScene, item.color, selectedColor]);
 
   // Idle sway (only when nothing is selected)
   useFrame((state) => {
@@ -36,7 +46,6 @@ function HangingGarment({ item, isSelected, isAnySelected, onClick }) {
     if (!groupRef.current) return;
 
     if (isSelected) {
-      // Move to center, scale up
       gsap.to(groupRef.current.position, {
         x: 0,
         y: 0.5,
@@ -58,10 +67,8 @@ function HangingGarment({ item, isSelected, isAnySelected, onClick }) {
         ease: "power3.inOut",
       });
     } else if (isAnySelected) {
-      // Fade out the unselected ones
       gsap.to(groupRef.current.position, {
         x: item.position[0] * 1.5,
-        opacity: 0,
         duration: 0.8,
         ease: "power2.in",
       });
@@ -72,7 +79,6 @@ function HangingGarment({ item, isSelected, isAnySelected, onClick }) {
         duration: 0.8,
       });
     } else {
-      // Reset back to original rack position
       gsap.to(groupRef.current.position, {
         x: item.position[0],
         y: 0,
@@ -96,6 +102,17 @@ function HangingGarment({ item, isSelected, isAnySelected, onClick }) {
     }
   }, [isSelected, isAnySelected, item.position]);
 
+  // Front/Back rotation animation
+  useEffect(() => {
+    if (innerRef.current && isSelected) {
+      gsap.to(innerRef.current.rotation, {
+        y: view === "front" ? Math.PI : 0,
+        duration: 0.8,
+        ease: "power2.inOut",
+      });
+    }
+  }, [view, isSelected]);
+
   return (
     <group
       ref={groupRef}
@@ -118,23 +135,24 @@ function HangingGarment({ item, isSelected, isAnySelected, onClick }) {
         <group rotation={[0, 0, Math.PI / 2]} />
       </mesh>
 
-      <primitive
-        object={clonedScene}
-        scale={1}
-        position={[0, -0.4, 0]}
-        rotation={[0, Math.PI, 0]}
-      />
+      {/* Inner group for front/back rotation */}
+      <group ref={innerRef} rotation={[0, Math.PI, 0]}>
+        <primitive object={clonedScene} scale={1} position={[0, -0.4, 0]} />
+      </group>
     </group>
   );
 }
 
-export default function GarmentRack({ selectedId, setSelectedId }) {
+export default function GarmentRack({
+  selectedId,
+  setSelectedId,
+  view,
+  selectedColor,
+}) {
   const { camera } = useThree();
 
-  // Animate camera when a product is selected
   useEffect(() => {
     if (selectedId) {
-      // Zoom in slightly
       gsap.to(camera.position, {
         z: 6,
         y: 0,
@@ -142,7 +160,6 @@ export default function GarmentRack({ selectedId, setSelectedId }) {
         ease: "power3.inOut",
       });
     } else {
-      // Reset camera
       gsap.to(camera.position, {
         z: 8,
         y: 0,
@@ -185,7 +202,9 @@ export default function GarmentRack({ selectedId, setSelectedId }) {
           item={item}
           isSelected={selectedId === item.id}
           isAnySelected={selectedId !== null}
-          onClick={(id) => setSelectedId(id === selectedId ? null : id)}
+          onClick={setSelectedId}
+          view={view}
+          selectedColor={selectedColor}
         />
       ))}
     </group>
