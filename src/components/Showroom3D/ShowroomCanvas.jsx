@@ -1,14 +1,16 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment, ContactShadows } from "@react-three/drei";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import GarmentRack from "./GarmentRack";
 
 export default function ShowroomCanvas() {
+  const [selectedId, setSelectedId] = useState(null);
+
   return (
-    <div className="showroom-canvas-wrapper">
+    <div className={`showroom-canvas-wrapper ${selectedId ? "focused" : ""}`}>
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
-        dpr={[1, 2]} // Prevents huge render on high-res phones
+        dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.4} />
@@ -27,7 +29,7 @@ export default function ShowroomCanvas() {
         />
 
         <Suspense fallback={null}>
-          <GarmentRack />
+          <GarmentRack selectedId={selectedId} setSelectedId={setSelectedId} />
           <Environment preset="studio" />
           <ContactShadows
             position={[0, -2.2, 0]}
