@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "../../context/CartContext";
 
 const COLOR_OPTIONS = [
   { hex: "#ffffff", label: "White" },
@@ -22,6 +23,23 @@ export default function ShowroomUI({
   selectedColor,
   setSelectedColor,
 }) {
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    if (!selectedItem) return;
+
+    addItem({
+      id: selectedItem.id,
+      name: selectedItem.name,
+      price: selectedItem.price,
+      image: "/images/rack/coat.jpg", // Fallback image for the cart drawer
+      color: selectedColor || selectedItem.color,
+    });
+
+    // Optionally close the showroom after adding
+    // onClose();
+  };
+
   return (
     <AnimatePresence>
       {selectedItem && (
@@ -43,6 +61,11 @@ export default function ShowroomUI({
             <span className="showroom-kicker">Enzo — SS26</span>
             <h2 className="showroom-title">{selectedItem.name}</h2>
             <p className="showroom-price">{selectedItem.price}</p>
+
+            {/* The Add to Cart button */}
+            <button className="showroom-add-to-cart" onClick={handleAddToCart}>
+              Add to Cart
+            </button>
           </div>
 
           {/* Front/Back Toggle + Color Picker (Bottom Right) */}
