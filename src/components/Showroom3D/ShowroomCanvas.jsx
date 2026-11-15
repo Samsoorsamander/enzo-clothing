@@ -5,7 +5,7 @@ import {
   AdaptiveDpr,
   AdaptiveEvents,
 } from "@react-three/drei";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import GarmentRack from "./GarmentRack";
 import ShowroomUI from "./ShowroomUI";
 
@@ -44,9 +44,22 @@ export default function ShowroomCanvas() {
   const [selectedId, setSelectedId] = useState(null);
   const [view, setView] = useState("front");
   const [selectedColor, setSelectedColor] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Check window size and motion preference on mount
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(motionQuery.matches);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const selectedItem = RACK_ITEMS.find((item) => item.id === selectedId);
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   const handleSelect = (id) => {
     setSelectedId(id === selectedId ? null : id);
@@ -64,18 +77,15 @@ export default function ShowroomCanvas() {
     <div className={`showroom-canvas-wrapper ${selectedId ? "focused" : ""}`}>
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
-        // Lower DPR on mobile for performance
         dpr={isMobile ? [1, 1.5] : [1, 2]}
         gl={{
-          antialias: !isMobile, // Disable antialias on mobile for speed
+          antialias: !isMobile,
           alpha: true,
           powerPreference: "high-performance",
         }}
-        // Freeze renders when nothing changes (huge battery saver)
         frameloop="demand"
       >
         <ambientLight intensity={0.6} />
-        {/* Single spotlight on mobile, two on desktop */}
         <spotLight
           position={[5, 10, 5]}
           angle={0.3}
@@ -98,6 +108,7 @@ export default function ShowroomCanvas() {
             setSelectedId={handleSelect}
             view={view}
             selectedColor={selectedColor}
+            prefersReducedMotion={prefersReducedMotion}
           />
           <Environment preset="studio" />
           {!isMobile && (
@@ -109,7 +120,6 @@ export default function ShowroomCanvas() {
               far={4}
             />
           )}
-          {/* Auto-downgrades resolution if frame rate drops */}
           <AdaptiveDpr pixelated />
           <AdaptiveEvents />
         </Suspense>
