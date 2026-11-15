@@ -24,15 +24,11 @@ export default function Hero() {
         },
       });
 
-      // Garment drops from above
+      // Garment drops from above and scales slightly
       tl.fromTo(
         garment.current,
-        {
-          y: window.innerWidth < 768 ? -200 : -300,
-          opacity: 0,
-          rotate: -8,
-        },
-        { y: 0, opacity: 1, rotate: 0, ease: "power2.out" },
+        { y: window.innerWidth < 768 ? -200 : -300, opacity: 0, scale: 0.9 },
+        { y: 0, opacity: 1, scale: 1, ease: "power2.out" },
         0,
       );
 
@@ -55,39 +51,12 @@ export default function Hero() {
       </div>
 
       <div className="hero-garment" ref={garment}>
-        {/* Simple hanging shirt SVG */}
-        <svg viewBox="0 0 200 260" width="220" height="286">
-          {/* Hanger hook */}
-          <path
-            d="M100 10 C100 10, 130 15, 130 35 C130 50, 115 55, 100 55"
-            fill="none"
-            stroke="#1a1a1a"
-            strokeWidth="2"
-          />
-          {/* Hanger bar */}
-          <line
-            x1="40"
-            y1="70"
-            x2="160"
-            y2="70"
-            stroke="#1a1a1a"
-            strokeWidth="2"
-          />
-          {/* Shirt body */}
-          <path
-            d="M70 75 L70 75 C70 75, 50 90, 45 130 L30 230 L170 230 L155 130 C150 90, 130 75, 130 75 L130 75 L100 100 L70 75 Z"
-            fill="#d4c5b0"
-            stroke="#1a1a1a"
-            strokeWidth="1.5"
-          />
-          {/* Collar detail */}
-          <path
-            d="M75 80 Q100 110 125 80"
-            fill="none"
-            stroke="#1a1a1a"
-            strokeWidth="1.5"
-          />
-        </svg>
+        {/* Real Image replacing the SVG */}
+        <img
+          src="/images/hero-coat.jpg"
+          alt="Enzo Signature Coat"
+          className="hero-image"
+        />
       </div>
 
       <p className="hero-sub">New Collection — SS26</p>

@@ -2137,3 +2137,24 @@ html.lenis body {
     transition: none !important;
   }
 }
+/* ---------- Showroom Add to Cart Button ---------- */
+.showroom-add-to-cart {
+  margin-top: 24px;
+  background: #1a1a1a;
+  color: #f5f0eb;
+  border: none;
+  padding: 14px 28px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.showroom-add-to-cart:hover {
+  background: #8a7a65;
+  transform: translateY(-2px);
+}
