@@ -4,29 +4,34 @@ import { Environment, ContactShadows } from "@react-three/drei";
 
 import GarmentRack from "./GarmentRack";
 
-function ShowroomLighting() {
+function StudioLighting() {
   return (
     <>
-      {/* Soft overall illumination */}
-      <ambientLight intensity={0.75} />
+      {/* Soft ambient illumination */}
+      <ambientLight intensity={0.65} />
 
-      {/* Main light */}
+      {/* Main studio light */}
       <directionalLight
         position={[4, 7, 6]}
-        intensity={2}
+        intensity={2.1}
         castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-camera-far={15}
-        shadow-bias={-0.0002}
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-left={-7}
+        shadow-camera-right={7}
+        shadow-camera-top={6}
+        shadow-camera-bottom={-6}
+        shadow-camera-far={20}
+        shadow-bias={-0.00015}
       />
 
-      {/* Left-side fill */}
+      {/* Left fill light */}
       <directionalLight position={[-5, 3, 4]} intensity={0.8} />
 
-      {/* Back light for depth */}
-      <pointLight position={[0, 3, -4]} intensity={1.2} />
+      {/* Soft back illumination */}
+      <pointLight position={[0, 3, -4]} intensity={1.1} />
 
+      {/* Studio environment reflections */}
       <Environment preset="studio" />
     </>
   );
@@ -40,7 +45,7 @@ export default function ShowroomCanvas() {
       <Canvas
         shadows
         camera={{
-          position: [0, 0, 10],
+          position: [0, 0.35, 10],
           fov: 38,
           near: 0.1,
           far: 100,
@@ -54,17 +59,17 @@ export default function ShowroomCanvas() {
         onPointerMissed={() => setSelectedId(null)}
       >
         <Suspense fallback={null}>
-          <ShowroomLighting />
+          <StudioLighting />
 
           <GarmentRack selectedId={selectedId} onSelect={setSelectedId} />
 
-          {/* Soft floor shadows */}
+          {/* Natural contact shadows beneath the garments */}
           <ContactShadows
-            position={[0, -2.13, 0]}
-            opacity={0.32}
-            scale={10}
-            blur={2.8}
-            far={4.5}
+            position={[0, -0.04, 0.3]}
+            opacity={0.28}
+            scale={9}
+            blur={3}
+            far={3.5}
             resolution={512}
           />
         </Suspense>
