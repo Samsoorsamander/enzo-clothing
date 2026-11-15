@@ -2,8 +2,6 @@ import { useRef, useEffect } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
-
-// Import the items from the parent so they stay in sync
 import { RACK_ITEMS } from "./ShowroomCanvas";
 
 function HangingGarment({
@@ -13,31 +11,31 @@ function HangingGarment({
   onClick,
   view,
   selectedColor,
+  prefersReducedMotion,
 }) {
   const groupRef = useRef();
   const innerRef = useRef();
   const { scene } = useGLTF("/models/hoodie.glb");
   const clonedScene = scene.clone();
-  const materialsRef = useRef([]);
+  const { invalidate } = useThree();
 
   // Apply color
   useEffect(() => {
-    materialsRef.current = [];
     clonedScene.traverse((child) => {
       if (child.isMesh && child.material) {
         child.material = child.material.clone();
-        materialsRef.current.push(child.material);
-        // If a custom color was picked, apply it, otherwise use the item's base color
         child.material.color.set(selectedColor || item.color);
       }
     });
-  }, [clonedScene, item.color, selectedColor]);
+    invalidate(); // Repaint after color change
+  }, [clonedScene, item.color, selectedColor, invalidate]);
 
-  // Idle sway (only when nothing is selected)
+  // Idle sway (only when nothing is selected and no reduced motion)
   useFrame((state) => {
-    if (groupRef.current && !isAnySelected) {
+    if (groupRef.current && !isAnySelected && !prefersReducedMotion) {
       groupRef.current.rotation.z =
         Math.sin(state.clock.elapsedTime * 1.5 + item.position[0]) * 0.02;
+      invalidate();
     }
   });
 
@@ -52,12 +50,14 @@ function HangingGarment({
         z: 2,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
       gsap.to(groupRef.current.rotation, {
         y: 0,
         z: 0,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
       gsap.to(groupRef.current.scale, {
         x: 1.4,
@@ -65,18 +65,21 @@ function HangingGarment({
         z: 1.4,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
     } else if (isAnySelected) {
       gsap.to(groupRef.current.position, {
         x: item.position[0] * 1.5,
         duration: 0.8,
         ease: "power2.in",
+        onUpdate: invalidate,
       });
       gsap.to(groupRef.current.scale, {
         x: 0.5,
         y: 0.5,
         z: 0.5,
         duration: 0.8,
+        onUpdate: invalidate,
       });
     } else {
       gsap.to(groupRef.current.position, {
@@ -85,12 +88,14 @@ function HangingGarment({
         z: 0,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
       gsap.to(groupRef.current.rotation, {
         y: 0,
         z: 0,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
       gsap.to(groupRef.current.scale, {
         x: 1,
@@ -98,9 +103,10 @@ function HangingGarment({
         z: 1,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
     }
-  }, [isSelected, isAnySelected, item.position]);
+  }, [isSelected, isAnySelected, item.position, invalidate]);
 
   // Front/Back rotation animation
   useEffect(() => {
@@ -109,9 +115,10 @@ function HangingGarment({
         y: view === "front" ? Math.PI : 0,
         duration: 0.8,
         ease: "power2.inOut",
+        onUpdate: invalidate,
       });
     }
-  }, [view, isSelected]);
+  }, [view, isSelected, invalidate]);
 
   return (
     <group
@@ -124,7 +131,6 @@ function HangingGarment({
       onPointerOver={() => (document.body.style.cursor = "pointer")}
       onPointerOut={() => (document.body.style.cursor = "auto")}
     >
-      {/* Hanger */}
       <mesh position={[0, 1.8, 0]}>
         <torusGeometry args={[0.1, 0.02, 16, 32, Math.PI]} />
         <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
@@ -135,7 +141,6 @@ function HangingGarment({
         <group rotation={[0, 0, Math.PI / 2]} />
       </mesh>
 
-      {/* Inner group for front/back rotation */}
       <group ref={innerRef} rotation={[0, Math.PI, 0]}>
         <primitive object={clonedScene} scale={1} position={[0, -0.4, 0]} />
       </group>
@@ -148,8 +153,9 @@ export default function GarmentRack({
   setSelectedId,
   view,
   selectedColor,
+  prefersReducedMotion,
 }) {
-  const { camera } = useThree();
+  const { camera, invalidate } = useThree();
 
   useEffect(() => {
     if (selectedId) {
@@ -158,6 +164,7 @@ export default function GarmentRack({
         y: 0,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
     } else {
       gsap.to(camera.position, {
@@ -165,20 +172,19 @@ export default function GarmentRack({
         y: 0,
         duration: 1,
         ease: "power3.inOut",
+        onUpdate: invalidate,
       });
     }
-  }, [selectedId, camera]);
+  }, [selectedId, camera, invalidate]);
 
   return (
     <group position={[0, -0.5, 0]}>
-      {/* The Metal Rail */}
       <mesh position={[0, 2.2, 0]}>
         <cylinderGeometry args={[0.03, 0.03, 7, 16]} />
         <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
         <group rotation={[0, 0, Math.PI / 2]} />
       </mesh>
 
-      {/* Vertical Poles */}
       <mesh position={[-3.4, 0, 0]}>
         <cylinderGeometry args={[0.03, 0.03, 4.4, 16]} />
         <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
@@ -188,14 +194,12 @@ export default function GarmentRack({
         <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
       </mesh>
 
-      {/* Base Bar */}
       <mesh position={[0, -2.2, 0]}>
         <cylinderGeometry args={[0.03, 0.03, 6.8, 16]} />
         <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
         <group rotation={[0, 0, Math.PI / 2]} />
       </mesh>
 
-      {/* Render hoodies */}
       {RACK_ITEMS.map((item) => (
         <HangingGarment
           key={item.id}
@@ -205,6 +209,7 @@ export default function GarmentRack({
           onClick={setSelectedId}
           view={view}
           selectedColor={selectedColor}
+          prefersReducedMotion={prefersReducedMotion}
         />
       ))}
     </group>
