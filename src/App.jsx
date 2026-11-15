@@ -13,12 +13,14 @@ import CartDrawer from "./components/CartDrawer";
 import CartButton from "./components/CartButton";
 import OrderSuccess from "./components/OrderSuccess";
 import Contact from "./components/Contact";
-import ShowroomCanvas from "./components/Showroom3D/ShowroomCanvas";
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
 
-// Lazy load the About page to save initial load time
+// Lazy load heavier components
 const About = lazy(() => import("./pages/About"));
+const ShowroomCanvas = lazy(
+  () => import("./components/Showroom3D/ShowroomCanvas"),
+);
 
 function HomePage() {
   return (
@@ -31,7 +33,9 @@ function HomePage() {
           <span className="rack-label">The Collection</span>
           <span className="rack-count">04 Pieces</span>
         </div>
-        <ShowroomCanvas />
+        <Suspense fallback={<div className="showroom-loading" />}>
+          <ShowroomCanvas />
+        </Suspense>
       </section>
 
       <Marquee
