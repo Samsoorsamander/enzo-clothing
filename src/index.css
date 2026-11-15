@@ -2131,3 +2131,9 @@ html.lenis body {
     transform: rotate(360deg);
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .showroom-canvas-wrapper * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
