@@ -1,69 +1,154 @@
 import { useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Box3, Vector3 } from "three";
+import { Box3, Vector3, CatmullRomCurve3 } from "three";
 
-const MODEL_PATH = "/models/hoodie.glb";
+const HOODIE_ONE = "/models/hoodie.glb";
+const HOODIE_TWO = "/models/hoodie2.glb";
 
+// Four display pieces using the two actual uploaded models.
+// Tint is multiplied with the original base-color texture.
 const RACK_ITEMS = [
-  { id: 1, color: "#e8e5df", position: -2.55 },
-  { id: 2, color: "#252525", position: -0.85 },
-  { id: 3, color: "#77736d", position: 0.85 },
-  { id: 4, color: "#a49a8b", position: 2.55 },
+  {
+    id: 1,
+    model: HOODIE_ONE,
+    tint: "#b8b5af",
+    position: -2.55,
+  },
+  {
+    id: 2,
+    model: HOODIE_TWO,
+    tint: "#ffffff",
+    position: -0.85,
+  },
+  {
+    id: 3,
+    model: HOODIE_ONE,
+    tint: "#777777",
+    position: 0.85,
+  },
+  {
+    id: 4,
+    model: HOODIE_TWO,
+    tint: "#b4aaa0",
+    position: 2.55,
+  },
 ];
 
-function MetalMaterial() {
+function MetalMaterial({ color = "#858b8e" }) {
   return (
-    <meshStandardMaterial color="#858b8e" metalness={0.88} roughness={0.24} />
+    <meshStandardMaterial color={color} metalness={0.88} roughness={0.27} />
   );
 }
 
-function HangerArm({ position, rotation }) {
+// Connect two points with a cylindrical metal rod.
+function MetalRod({ start, end, radius = 0.012, color = "#858b8e" }) {
+  const direction = new Vector3(
+    end[0] - start[0],
+    end[1] - start[1],
+    end[2] - start[2],
+  );
+
+  const length = direction.length();
+
+  const midpoint = [
+    (start[0] + end[0]) / 2,
+    (start[1] + end[1]) / 2,
+    (start[2] + end[2]) / 2,
+  ];
+
+  const rotation = useMemo(() => {
+    return new Vector3(0, 1, 0).angleTo(direction);
+  }, [direction.x, direction.y, direction.z]);
+
+  const quaternion = useMemo(() => {
+    const result = new Vector3(0, 1, 0);
+    result.cross(direction).normalize();
+
+    return result.lengthSq() > 0 ? [result.x, result.y, result.z] : [0, 0, 1];
+  }, [direction.x, direction.y, direction.z]);
+
   return (
-    <mesh position={position} rotation={rotation}>
-      <cylinderGeometry args={[0.012, 0.012, 0.68, 10]} />
-      <MetalMaterial />
+    <mesh
+      position={midpoint}
+      quaternion={undefined}
+      rotation={[
+        Math.atan2(direction.z, direction.y),
+        Math.atan2(direction.x, direction.y),
+        0,
+      ]}
+      scale={[1, 1, 1]}
+    >
+      <cylinderGeometry args={[radius, radius, length, 10]} />
+      <MetalMaterial color={color} />
     </mesh>
   );
 }
 
-function Hanger() {
+/**
+ * Realistic metal hanger.
+ *
+ * The garment is placed in front of the hanger.
+ * The hanger is attached to the garment's pivot.
+ */
+function Hanger({ width = 0.76 }) {
+  const z = -0.25;
+  const half = width / 2;
+
+  const hookCurve = useMemo(
+    () =>
+      new CatmullRomCurve3([
+        new Vector3(0, 0.02, z),
+        new Vector3(0.055, 0.12, z),
+        new Vector3(0.09, 0.28, z),
+        new Vector3(0.07, 0.43, z),
+        new Vector3(0.015, 0.51, z),
+        new Vector3(-0.06, 0.51, z),
+      ]),
+    [z],
+  );
+
   return (
     <group>
-      {/* Metal hook */}
-      <mesh position={[0, 1.16, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.075, 0.012, 10, 28, Math.PI * 1.65]} />
-        <MetalMaterial />
+      {/* Curved hanger hook */}
+      <mesh>
+        <tubeGeometry args={[hookCurve, 32, 0.012, 8, false]} />
+        <MetalMaterial color="#a0a5a7" />
       </mesh>
 
-      {/* Hook neck */}
-      <mesh position={[0, 1.0, 0]}>
-        <cylinderGeometry args={[0.012, 0.012, 0.28, 10]} />
-        <MetalMaterial />
-      </mesh>
+      {/* Hanger neck */}
+      <MetalRod start={[0, -0.02, z]} end={[0, -0.1, z]} radius={0.014} />
 
       {/* Left shoulder */}
-      <HangerArm position={[-0.24, 0.79, 0]} rotation={[0, 0, -2.12]} />
+      <MetalRod start={[-half, -0.4, z]} end={[0, -0.1, z]} radius={0.013} />
 
       {/* Right shoulder */}
-      <HangerArm position={[0.24, 0.79, 0]} rotation={[0, 0, 2.12]} />
+      <MetalRod start={[0, -0.1, z]} end={[half, -0.4, z]} radius={0.013} />
 
-      {/* Horizontal hanger support */}
-      <mesh position={[0, 0.58, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.008, 0.008, 0.48, 8]} />
-        <MetalMaterial />
+      {/* Bottom horizontal support */}
+      <MetalRod
+        start={[-half * 0.65, -0.43, z]}
+        end={[half * 0.65, -0.43, z]}
+        radius={0.008}
+        color="#999999"
+      />
+
+      {/* Small central hanger connector */}
+      <mesh position={[0, -0.1, z]}>
+        <sphereGeometry args={[0.022, 12, 12]} />
+        <MetalMaterial color="#b0b4b5" />
       </mesh>
     </group>
   );
 }
 
-function HangingGarment({ item, selected, onSelect }) {
-  const groupRef = useRef();
+/**
+ * Load and normalize an actual garment model.
+ */
+function useGarmentModel(modelPath, tint) {
+  const { scene } = useGLTF(modelPath);
 
-  const { scene } = useGLTF(MODEL_PATH);
-
-  // Create an independent model and material for every garment.
-  const model = useMemo(() => {
+  return useMemo(() => {
     const clonedScene = scene.clone(true);
 
     clonedScene.traverse((child) => {
@@ -72,144 +157,186 @@ function HangingGarment({ item, selected, onSelect }) {
       child.castShadow = true;
       child.receiveShadow = true;
 
-      if (child.material) {
-        const materials = Array.isArray(child.material)
-          ? child.material
-          : [child.material];
+      const originalMaterials = Array.isArray(child.material)
+        ? child.material
+        : [child.material];
 
-        const clonedMaterials = materials.map((material) => {
-          const cloned = material.clone();
+      const clonedMaterials = originalMaterials.map((material) => {
+        const clonedMaterial = material.clone();
 
-          if (cloned.color) {
-            cloned.color.set(item.color);
-          }
+        // Preserve original fabric textures and normal maps.
+        // Do not recolor decorative stitching.
+        if (
+          clonedMaterial.color &&
+          !clonedMaterial.name.toLowerCase().includes("stitch")
+        ) {
+          clonedMaterial.color.set(tint);
+        }
 
-          if ("roughness" in cloned) {
-            cloned.roughness = Math.max(cloned.roughness, 0.65);
-          }
+        clonedMaterial.roughness = Math.max(
+          clonedMaterial.roughness ?? 0.8,
+          0.55,
+        );
 
-          return cloned;
-        });
+        clonedMaterial.needsUpdate = true;
 
-        child.material = Array.isArray(child.material)
-          ? clonedMaterials
-          : clonedMaterials[0];
-      }
+        return clonedMaterial;
+      });
+
+      child.material = Array.isArray(child.material)
+        ? clonedMaterials
+        : clonedMaterials[0];
     });
 
-    // Automatically calculate the model's actual dimensions.
     clonedScene.updateMatrixWorld(true);
 
     const bounds = new Box3().setFromObject(clonedScene);
+
     const dimensions = new Vector3();
     const center = new Vector3();
 
     bounds.getSize(dimensions);
     bounds.getCenter(center);
 
-    const targetHeight = 1.45;
+    // Target garment height in scene units.
+    const targetHeight = 1.55;
+
     const scale = targetHeight / Math.max(dimensions.y, 0.001);
+
+    // Center the model horizontally and place its bottom at y=0.
+    const position = [
+      -center.x * scale,
+      -bounds.min.y * scale,
+      -center.z * scale,
+    ];
+
+    // Make the hanger width proportional to the actual garment.
+    const hangerWidth = Math.min(
+      0.9,
+      Math.max(0.62, dimensions.x * scale * 0.95),
+    );
 
     return {
       scene: clonedScene,
       scale,
-      center: [-center.x * scale, -center.y * scale - 0.45, -center.z * scale],
+      position,
+      hangerWidth,
     };
-  }, [scene, item.color]);
+  }, [scene, tint]);
+}
 
-  // Natural idle movement and smooth selection.
+/**
+ * Individual hanging garment.
+ */
+function HangingGarment({ item, selected, onSelect }) {
+  const pivotRef = useRef();
+
+  const model = useGarmentModel(item.model, item.tint);
+
+  // The pivot is located at the hanger hook.
+  // This allows the whole garment to swing naturally.
   useFrame((state, delta) => {
-    if (!groupRef.current) return;
+    if (!pivotRef.current) return;
 
     const time = state.clock.elapsedTime;
-    const smooth = 1 - Math.exp(-5 * delta);
 
-    const targetScale = selected ? 1.13 : 1;
-    const targetZ = selected ? 0.35 : 0;
+    const smooth = 1 - Math.exp(-4 * delta);
 
-    const targetY = 0.15 + Math.sin(time * 1.1 + item.position) * 0.012;
+    const idleSwing = Math.sin(time * 0.85 + item.position) * 0.008;
 
-    const targetRotation = Math.sin(time * 1.15 + item.position) * 0.012;
+    const targetSwing = idleSwing;
 
-    const group = groupRef.current;
+    const targetScale = selected ? 1.08 : 1;
+    const targetZ = selected ? 0.32 : 0;
 
-    const nextScale = group.scale.x + (targetScale - group.scale.x) * smooth;
+    pivotRef.current.rotation.z +=
+      (targetSwing - pivotRef.current.rotation.z) * smooth;
 
-    group.scale.setScalar(nextScale);
+    pivotRef.current.scale.x +=
+      (targetScale - pivotRef.current.scale.x) * smooth;
 
-    group.position.y += (targetY - group.position.y) * smooth;
+    pivotRef.current.scale.y +=
+      (targetScale - pivotRef.current.scale.y) * smooth;
 
-    group.position.z += (targetZ - group.position.z) * smooth;
+    pivotRef.current.scale.z +=
+      (targetScale - pivotRef.current.scale.z) * smooth;
 
-    group.rotation.z += (targetRotation - group.rotation.z) * smooth;
+    pivotRef.current.position.z +=
+      (targetZ - pivotRef.current.position.z) * smooth;
   });
 
   return (
-    <group
-      ref={groupRef}
-      position={[item.position, 0.15, 0]}
-      onClick={(event) => {
-        event.stopPropagation();
-        onSelect(item.id);
-      }}
-    >
-      {/* Connector from the top rail to the hanger */}
-      <mesh position={[0, 1.55, 0]}>
-        <cylinderGeometry args={[0.009, 0.009, 0.75, 8]} />
-        <MetalMaterial />
-      </mesh>
+    <group position={[item.position, 0, 0]}>
+      <group
+        ref={pivotRef}
+        position={[0, 2.0, 0]}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect(item.id);
+        }}
+      >
+        {/* Hanger sits behind the garment */}
+        <Hanger width={model.hangerWidth} />
 
-      <Hanger />
-
-      {/* Normalized clothing model */}
-      <primitive
-        object={model.scene}
-        position={model.center}
-        scale={model.scale}
-      />
+        {/* Real garment */}
+        <primitive
+          object={model.scene}
+          position={[
+            model.position[0],
+            model.position[1] - 2.0,
+            model.position[2],
+          ]}
+          scale={model.scale}
+        />
+      </group>
     </group>
   );
 }
 
+/**
+ * Main showroom clothing rack.
+ */
 export default function GarmentRack({
   selectedId = null,
   onSelect = () => {},
 }) {
+  const frameMaterial = "#7e8588";
+
   return (
     <group>
-      {/* Main horizontal rail */}
-      <mesh position={[0, 2.0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-        <cylinderGeometry args={[0.025, 0.025, 7.5, 20]} />
-        <MetalMaterial />
+      {/* Main horizontal top rail */}
+      <mesh position={[0, 2.65, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+        <cylinderGeometry args={[0.025, 0.025, 7.5, 24]} />
+        <MetalMaterial color={frameMaterial} />
       </mesh>
 
-      {/* Left vertical support */}
-      <mesh position={[-3.65, -0.05, 0]} castShadow>
-        <cylinderGeometry args={[0.025, 0.025, 4.1, 16]} />
-        <MetalMaterial />
+      {/* Left vertical frame support */}
+      <mesh position={[-3.65, 0.35, 0]} castShadow>
+        <cylinderGeometry args={[0.025, 0.025, 4.6, 20]} />
+        <MetalMaterial color={frameMaterial} />
       </mesh>
 
-      {/* Right vertical support */}
-      <mesh position={[3.65, -0.05, 0]} castShadow>
-        <cylinderGeometry args={[0.025, 0.025, 4.1, 16]} />
-        <MetalMaterial />
+      {/* Right vertical frame support */}
+      <mesh position={[3.65, 0.35, 0]} castShadow>
+        <cylinderGeometry args={[0.025, 0.025, 4.6, 20]} />
+        <MetalMaterial color={frameMaterial} />
       </mesh>
 
-      {/* Bottom stabilizing rail */}
-      <mesh position={[0, -2.1, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.022, 0.022, 7.3, 16]} />
-        <MetalMaterial />
+      {/* Bottom frame rail */}
+      <mesh position={[0, -1.95, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.022, 0.022, 7.3, 20]} />
+        <MetalMaterial color={frameMaterial} />
       </mesh>
 
-      {/* Metal joints */}
+      {/* Top frame joints */}
       {[-3.65, 3.65].map((x) => (
-        <mesh key={x} position={[x, 2.0, 0]}>
-          <sphereGeometry args={[0.055, 16, 16]} />
-          <MetalMaterial />
+        <mesh key={x} position={[x, 2.65, 0]}>
+          <sphereGeometry args={[0.045, 16, 16]} />
+          <MetalMaterial color="#9da2a3" />
         </mesh>
       ))}
 
-      {/* Clothing collection */}
+      {/* Four actual hoodie models */}
       {RACK_ITEMS.map((item) => (
         <HangingGarment
           key={item.id}
@@ -222,4 +349,6 @@ export default function GarmentRack({
   );
 }
 
-useGLTF.preload(MODEL_PATH);
+// Preload both models.
+useGLTF.preload(HOODIE_ONE);
+useGLTF.preload(HOODIE_TWO);
