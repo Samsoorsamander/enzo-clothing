@@ -32,7 +32,7 @@ export default function Unfold() {
         garment.current,
         {
           clipPath: "inset(45% 20% 45% 20% round 8px)",
-          scale: 0.6,
+          scale: 0.8,
           rotate: -2,
         },
         {
@@ -91,38 +91,13 @@ export default function Unfold() {
           </svg>
         </div>
 
-        {/* The unfolding garment */}
+        {/* The unfolding garment (Real Image) */}
         <div className="unfold-garment" ref={garment}>
-          <svg viewBox="0 0 300 360" width="300" height="360">
-            {/* Long coat */}
-            <path
-              d="M110 30 L110 30 C110 30, 70 55, 60 120 L40 340 L260 340 L240 120 C230 55, 190 30, 190 30 L190 30 L150 65 L110 30 Z"
-              fill="#a89880"
-              stroke="#1a1a1a"
-              strokeWidth="1.5"
-            />
-            {/* Center seam */}
-            <line
-              x1="150"
-              y1="65"
-              x2="150"
-              y2="340"
-              stroke="#1a1a1a"
-              strokeWidth="1"
-              opacity="0.4"
-            />
-            {/* Collar */}
-            <path
-              d="M115 38 Q150 80 185 38"
-              fill="none"
-              stroke="#1a1a1a"
-              strokeWidth="1.5"
-            />
-            {/* Buttons */}
-            <circle cx="150" cy="140" r="2.5" fill="#1a1a1a" />
-            <circle cx="150" cy="180" r="2.5" fill="#1a1a1a" />
-            <circle cx="150" cy="220" r="2.5" fill="#1a1a1a" />
-          </svg>
+          <img
+            src="/images/long-coat.jpg"
+            alt="Enzo Long Coat"
+            className="unfold-image"
+          />
         </div>
       </div>
 
