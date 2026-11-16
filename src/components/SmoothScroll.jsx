@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-// Mobile stability fixes
 ScrollTrigger.config({ ignoreMobileResize: true });
 
 if (ScrollTrigger.isTouch === 1) {
@@ -15,29 +14,26 @@ export default function SmoothScroll({ children }) {
   const lenisRef = useRef(null);
 
   useEffect(() => {
-    // Respect users who prefer reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const lenis = new Lenis({
-      duration: 1.2,
+      // Snappier scroll — less “stocky” lag between wheel and motion
+      duration: 0.78,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      wheelMultiplier: 1.15,
+      touchMultiplier: 1.35,
     });
 
     lenisRef.current = lenis;
-
-    // 1. Tell ScrollTrigger to update whenever Lenis scrolls
     lenis.on("scroll", ScrollTrigger.update);
 
-    // 2. Drive Lenis's raf from GSAP's ticker (single loop, no fighting)
     const raf = (time) => {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(raf);
-
-    // 3. Disable lag smoothing so scroll animations stay tight
     gsap.ticker.lagSmoothing(0);
 
     return () => {

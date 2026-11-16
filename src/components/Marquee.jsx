@@ -23,7 +23,7 @@ export default function Marquee({
 
       tween = gsap.to(track, {
         x: direction > 0 ? -halfWidth : 0,
-        duration: speed,
+        duration: Math.max(12, speed * 0.7),
         ease: "none",
         repeat: -1,
       });

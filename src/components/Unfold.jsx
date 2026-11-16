@@ -42,8 +42,8 @@ export default function Unfold() {
         scrollTrigger: {
           trigger: section.current,
           start: "top top",
-          end: window.innerWidth < 768 ? "+=170%" : "+=220%",
-          scrub: 1.15,
+          end: window.innerWidth < 768 ? "+=110%" : "+=140%",
+          scrub: 0.5,
           pin: true,
           invalidateOnRefresh: true,
         },

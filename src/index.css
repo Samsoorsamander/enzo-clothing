@@ -765,8 +765,11 @@ html.lenis body {
   width: 100%;
   overflow: hidden;
   background: #1a1a1a;
-  padding: 40px 0;
+  padding: 72px 0;
   position: relative;
+  min-height: 28vh;
+  display: flex;
+  align-items: center;
 }
 
 .marquee.cream {
@@ -798,7 +801,8 @@ html.lenis body {
 
 @media (max-width: 768px) {
   .marquee {
-    padding: 24px 0;
+    padding: 48px 0;
+    min-height: 22vh;
   }
   .marquee-item {
     padding-right: 24px;
@@ -2043,10 +2047,17 @@ html.lenis body {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #b0b0b0, #e0e0e0, #b0b0b0);
+  height: 4px;
   border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(26, 26, 26, 0.15);
+  background: linear-gradient(
+    180deg,
+    #ececec 0%,
+    #cfcfcf 40%,
+    #9a9a9a 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 2px 4px rgba(26, 26, 26, 0.18);
 }
 
 .collection-rail-post {
@@ -2078,9 +2089,9 @@ html.lenis body {
 
 .collection-item {
   position: absolute;
-  top: 14%;
+  top: 16%;
   width: min(210px, 34vw);
-  height: 64%;
+  height: 62%;
   border: 0;
   background: transparent;
   padding: 0;
@@ -2092,26 +2103,13 @@ html.lenis body {
 
 .collection-hanger {
   position: absolute;
-  top: -18px;
+  top: -34px;
   left: 50%;
-  width: 28px;
-  height: 28px;
-  margin-left: -14px;
-  border: 2.5px solid #8a8a8a;
-  border-bottom: 0;
-  border-radius: 14px 14px 0 0;
-  box-sizing: border-box;
-}
-
-.collection-hanger::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: 2px;
-  height: 18px;
-  margin-left: -1px;
-  background: #8a8a8a;
+  transform: translateX(-50%);
+  overflow: visible;
+  filter: drop-shadow(0 1px 1px rgba(26, 26, 26, 0.25));
+  pointer-events: none;
+  z-index: 2;
 }
 
 .collection-image {

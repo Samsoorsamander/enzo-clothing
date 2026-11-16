@@ -17,8 +17,8 @@ export default function Hero() {
         scrollTrigger: {
           trigger: container.current,
           start: "top top",
-          end: window.innerWidth < 768 ? "+=70%" : "+=90%",
-          scrub: 1,
+          end: window.innerWidth < 768 ? "+=45%" : "+=55%",
+          scrub: 0.45,
           pin: true,
           invalidateOnRefresh: true,
         },

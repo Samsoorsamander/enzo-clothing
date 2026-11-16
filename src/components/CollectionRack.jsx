@@ -47,14 +47,67 @@ export const RACK_ITEMS = [
   },
 ];
 
-const SPACING = 220; // px between hangers
+const SPACING = 220;
+
+function HangerIcon() {
+  return (
+    <svg
+      className="collection-hanger"
+      viewBox="0 0 64 46"
+      width="56"
+      height="40"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="hangerMetal" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f2f2f2" />
+          <stop offset="45%" stopColor="#b8b8b8" />
+          <stop offset="100%" stopColor="#7e7e7e" />
+        </linearGradient>
+      </defs>
+      {/* Hook over the rail */}
+      <path
+        d="M32 3c0 0 9 0 9 8.5S32 20 32 14.5"
+        fill="none"
+        stroke="url(#hangerMetal)"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+      {/* Neck */}
+      <path
+        d="M32 14.5V22"
+        fill="none"
+        stroke="url(#hangerMetal)"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      {/* Shoulders */}
+      <path
+        d="M6 28.5c8.5-7.5 43.5-7.5 52 0"
+        fill="none"
+        stroke="url(#hangerMetal)"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      {/* Tips */}
+      <path
+        d="M6 28.5v4.5M58 28.5v4.5"
+        fill="none"
+        stroke="url(#hangerMetal)"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 export default function CollectionRack() {
   const trackRef = useRef(null);
   const offsetRef = useRef(0);
   const targetRef = useRef(0);
-  const dragRef = useRef({ active: false, x: 0 });
+  const dragRef = useRef({ active: false, x: 0, moved: false });
   const itemRefs = useRef([]);
+  const activeIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
   const [view, setView] = useState("front");
@@ -70,17 +123,15 @@ export default function CollectionRack() {
   const selectedIdRef = useRef(selectedId);
   selectedIdRef.current = selectedId;
 
-  // Smooth drag/scroll + side-profile → front-face by distance from center
   useEffect(() => {
     let raf;
     const tick = () => {
-      // While a product is focused, GSAP owns transforms
       if (selectedIdRef.current) {
         raf = requestAnimationFrame(tick);
         return;
       }
 
-      offsetRef.current += (targetRef.current - offsetRef.current) * 0.14;
+      offsetRef.current += (targetRef.current - offsetRef.current) * 0.18;
       const offset = offsetRef.current;
       let closest = 0;
       let closestDist = Infinity;
@@ -90,7 +141,7 @@ export default function CollectionRack() {
         const slot = (i - (RACK_ITEMS.length - 1) / 2) * SPACING;
         const x = slot - offset;
         const dist = Math.abs(x);
-        const face = 1 - Math.min(dist / 170, 1); // 1 at center
+        const face = 1 - Math.min(dist / 170, 1);
         const rotY = Math.max(-78, Math.min(78, x * 0.42));
         const scale = 0.72 + face * 0.4;
         const z = face * 80;
@@ -98,7 +149,6 @@ export default function CollectionRack() {
         el.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${-rotY}deg) scale(${scale})`;
         el.style.zIndex = String(Math.round(face * 20) + 1);
         el.style.opacity = String(0.55 + face * 0.45);
-        el.dataset.face = face > 0.65 ? "1" : "0";
 
         if (dist < closestDist) {
           closestDist = dist;
@@ -106,7 +156,10 @@ export default function CollectionRack() {
         }
       });
 
-      setActiveIndex((prev) => (prev === closest ? prev : closest));
+      if (activeIndexRef.current !== closest) {
+        activeIndexRef.current = closest;
+        setActiveIndex(closest);
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -117,19 +170,18 @@ export default function CollectionRack() {
     const el = trackRef.current;
     if (!el) return;
 
+    // Only consume horizontal trackpad swipes — never block vertical page scroll
     const onWheel = (e) => {
-      if (selectedId) return;
+      if (selectedIdRef.current) return;
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
       e.preventDefault();
-      const delta =
-        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      targetRef.current = clamp(targetRef.current + delta * 0.9);
+      targetRef.current = clamp(targetRef.current + e.deltaX * 0.85);
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [selectedId, maxOffset]);
+  }, [maxOffset]);
 
-  // Focus animation
   useEffect(() => {
     itemRefs.current.forEach((el, i) => {
       if (!el) return;
@@ -146,8 +198,8 @@ export default function CollectionRack() {
           rotateY: view === "back" ? 180 : 0,
           scale: 1.25,
           opacity: 1,
-          duration: 0.7,
-          ease: "power3.inOut",
+          duration: 0.55,
+          ease: "power3.out",
         });
       } else {
         const side = i < activeIndex ? -1 : 1;
@@ -157,8 +209,8 @@ export default function CollectionRack() {
           rotateY: side * 70,
           scale: 0.55,
           opacity: 0.25,
-          duration: 0.65,
-          ease: "power2.inOut",
+          duration: 0.5,
+          ease: "power2.out",
         });
       }
     });
@@ -166,12 +218,13 @@ export default function CollectionRack() {
 
   const onPointerDown = (e) => {
     if (selectedId) return;
-    dragRef.current = { active: true, x: e.clientX };
+    dragRef.current = { active: true, x: e.clientX, moved: false };
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onPointerMove = (e) => {
     if (!dragRef.current.active || selectedId) return;
     const dx = e.clientX - dragRef.current.x;
+    if (Math.abs(dx) > 2) dragRef.current.moved = true;
     dragRef.current.x = e.clientX;
     targetRef.current = clamp(targetRef.current - dx);
   };
@@ -207,14 +260,14 @@ export default function CollectionRack() {
               itemRefs.current[i] = el;
             }}
             onClick={() => {
-              if (Math.abs(targetRef.current - offsetRef.current) > 8) return;
+              if (dragRef.current.moved) return;
               setSelectedId(item.id);
               setView("front");
               setSelectedColor(null);
             }}
             aria-label={item.name}
           >
-            <span className="collection-hanger" aria-hidden="true" />
+            <HangerIcon />
             <img
               src={item.image}
               alt=""
@@ -229,7 +282,7 @@ export default function CollectionRack() {
         <div className="rack-browse-meta" key={browsing.id}>
           <span className="rack-browse-name">{browsing.name}</span>
           <span className="rack-browse-price">{browsing.price}</span>
-          <span className="rack-browse-hint">Drag or scroll · Click to open</span>
+          <span className="rack-browse-hint">Drag to browse · Scroll to continue</span>
         </div>
       )}
 
