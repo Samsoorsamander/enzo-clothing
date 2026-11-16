@@ -1,18 +1,21 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { useCart } from "../../context/CartContext";
 
 const COLOR_OPTIONS = [
-  { hex: "#ffffff", label: "White" },
+  { hex: "#f2f0ea", label: "Ivory" },
   { hex: "#1a1a1a", label: "Black" },
   { hex: "#8a7a65", label: "Desert" },
   { hex: "#a89880", label: "Sand" },
   { hex: "#4a6b8a", label: "Ocean" },
 ];
 
+const SIZES = ["S", "M", "L", "XL"];
+
 const fadeVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 18 },
   visible: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 20 },
+  exit: { opacity: 0, y: 12 },
 };
 
 export default function ShowroomUI({
@@ -24,20 +27,18 @@ export default function ShowroomUI({
   setSelectedColor,
 }) {
   const { addItem } = useCart();
+  const [size, setSize] = useState("M");
 
   const handleAddToCart = () => {
     if (!selectedItem) return;
 
     addItem({
-      id: selectedItem.id,
-      name: selectedItem.name,
+      id: `${selectedItem.id}-${selectedColor || selectedItem.color}-${size}`,
+      name: `${selectedItem.name} · ${size}`,
       price: selectedItem.price,
-      image: "/images/rack/coat.jpg", // Fallback image for the cart drawer
+      image: "/images/hero-coat.png",
       color: selectedColor || selectedItem.color,
     });
-
-    // Optionally close the showroom after adding
-    // onClose();
   };
 
   return (
@@ -49,26 +50,40 @@ export default function ShowroomUI({
           animate="visible"
           exit="hidden"
           variants={fadeVariants}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
         >
-          {/* Back Button */}
           <button className="showroom-back" onClick={onClose}>
             ← Back to Collection
           </button>
 
-          {/* Product Info (Bottom Left) */}
+          {/* Floating hang tags like the reference */}
+          <div className="showroom-tags" aria-hidden="true">
+            <span className="showroom-tag showroom-tag--warm">SS26</span>
+            <span className="showroom-tag showroom-tag--dark">ENZO</span>
+          </div>
+
           <div className="showroom-info">
             <span className="showroom-kicker">Enzo — SS26</span>
             <h2 className="showroom-title">{selectedItem.name}</h2>
             <p className="showroom-price">{selectedItem.price}</p>
 
-            {/* The Add to Cart button */}
+            <div className="showroom-sizes">
+              {SIZES.map((s) => (
+                <button
+                  key={s}
+                  className={`showroom-size ${size === s ? "active" : ""}`}
+                  onClick={() => setSize(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+
             <button className="showroom-add-to-cart" onClick={handleAddToCart}>
-              Add to Cart
+              Add to Cart — {size}
             </button>
           </div>
 
-          {/* Front/Back Toggle + Color Picker (Bottom Right) */}
           <div className="showroom-controls">
             <div className="showroom-toggle">
               <button

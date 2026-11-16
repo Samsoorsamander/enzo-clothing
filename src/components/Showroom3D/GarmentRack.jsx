@@ -1,157 +1,222 @@
-import { useRef, useEffect } from "react";
-import { useGLTF, Float } from "@react-three/drei";
+import { useRef, useEffect, useMemo } from "react";
+import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 import gsap from "gsap";
 import { RACK_ITEMS } from "./ShowroomCanvas";
 
+const SPACING = 1.85;
+
 function HangingGarment({
   item,
-  isSelected,
-  isAnySelected,
-  onClick,
+  index,
+  offsetRef,
+  selectedId,
+  onSelect,
   view,
   selectedColor,
   prefersReducedMotion,
 }) {
   const groupRef = useRef();
+  const hangerRef = useRef();
   const innerRef = useRef();
   const { scene } = useGLTF("/models/hoodie.glb");
-  const clonedScene = scene.clone();
+  const clonedScene = useMemo(() => scene.clone(true), [scene]);
   const { invalidate } = useThree();
+  const slotX = (index - (RACK_ITEMS.length - 1) / 2) * SPACING;
+  const isSelected = selectedId === item.id;
+  const isAnySelected = selectedId !== null;
 
-  // Apply color
   useEffect(() => {
     clonedScene.traverse((child) => {
       if (child.isMesh && child.material) {
         child.material = child.material.clone();
         child.material.color.set(selectedColor || item.color);
+        child.material.roughness = 0.85;
+        child.material.metalness = 0.05;
       }
     });
-    invalidate(); // Repaint after color change
+    invalidate();
   }, [clonedScene, item.color, selectedColor, invalidate]);
 
-  // Idle sway (only when nothing is selected and no reduced motion)
   useFrame((state) => {
-    if (groupRef.current && !isAnySelected && !prefersReducedMotion) {
-      groupRef.current.rotation.z =
-        Math.sin(state.clock.elapsedTime * 1.5 + item.position[0]) * 0.02;
-      invalidate();
+    if (!groupRef.current || !innerRef.current) return;
+
+    const t = state.clock.elapsedTime;
+    const offset = offsetRef.current;
+
+    if (isSelected) {
+      // Focus handled by GSAP — keep a soft sway
+      if (!prefersReducedMotion && hangerRef.current) {
+        hangerRef.current.rotation.z = Math.sin(t * 1.4) * 0.015;
+      }
+      return;
     }
+
+    if (isAnySelected) return;
+
+    // Position on the rail relative to scroll/drag offset
+    const x = slotX - offset;
+    const dist = x;
+    const faceAmount = 1 - Math.min(Math.abs(dist) / 1.35, 1);
+    const targetRotY = THREE.MathUtils.clamp(dist * 1.35, -1.55, 1.55);
+    const targetScale = 0.78 + faceAmount * 0.42;
+    const targetZ = faceAmount * 0.35;
+
+    groupRef.current.position.x = THREE.MathUtils.lerp(
+      groupRef.current.position.x,
+      x,
+      0.14,
+    );
+    groupRef.current.position.y = THREE.MathUtils.lerp(
+      groupRef.current.position.y,
+      0,
+      0.12,
+    );
+    groupRef.current.position.z = THREE.MathUtils.lerp(
+      groupRef.current.position.z,
+      targetZ,
+      0.12,
+    );
+
+    innerRef.current.rotation.y = THREE.MathUtils.lerp(
+      innerRef.current.rotation.y,
+      Math.PI + targetRotY,
+      0.12,
+    );
+    groupRef.current.scale.setScalar(
+      THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.12),
+    );
+
+    // Idle hanger sway
+    if (!prefersReducedMotion && hangerRef.current) {
+      hangerRef.current.rotation.z =
+        Math.sin(t * 1.6 + slotX * 2.1) * 0.03 * (0.4 + faceAmount);
+    }
+
+    invalidate();
   });
 
-  // Animate in/out when selection changes
+  // Focus / unfocus camera staging
   useEffect(() => {
     if (!groupRef.current) return;
 
     if (isSelected) {
       gsap.to(groupRef.current.position, {
         x: 0,
-        y: 0.5,
-        z: 2,
-        duration: 1,
-        ease: "power3.inOut",
-        onUpdate: invalidate,
-      });
-      gsap.to(groupRef.current.rotation, {
-        y: 0,
-        z: 0,
+        y: 0.35,
+        z: 1.6,
         duration: 1,
         ease: "power3.inOut",
         onUpdate: invalidate,
       });
       gsap.to(groupRef.current.scale, {
-        x: 1.4,
-        y: 1.4,
-        z: 1.4,
+        x: 1.45,
+        y: 1.45,
+        z: 1.45,
         duration: 1,
+        ease: "power3.inOut",
+        onUpdate: invalidate,
+      });
+      gsap.to(innerRef.current.rotation, {
+        y: Math.PI,
+        duration: 0.9,
         ease: "power3.inOut",
         onUpdate: invalidate,
       });
     } else if (isAnySelected) {
+      const side = slotX < 0 ? -1 : 1;
       gsap.to(groupRef.current.position, {
-        x: item.position[0] * 1.5,
-        duration: 0.8,
-        ease: "power2.in",
-        onUpdate: invalidate,
-      });
-      gsap.to(groupRef.current.scale, {
-        x: 0.5,
-        y: 0.5,
-        z: 0.5,
-        duration: 0.8,
-        onUpdate: invalidate,
-      });
-    } else {
-      gsap.to(groupRef.current.position, {
-        x: item.position[0],
+        x: side * (3.2 + Math.abs(slotX) * 0.15),
         y: 0,
-        z: 0,
-        duration: 1,
-        ease: "power3.inOut",
-        onUpdate: invalidate,
-      });
-      gsap.to(groupRef.current.rotation, {
-        y: 0,
-        z: 0,
-        duration: 1,
-        ease: "power3.inOut",
-        onUpdate: invalidate,
-      });
-      gsap.to(groupRef.current.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 1,
-        ease: "power3.inOut",
-        onUpdate: invalidate,
-      });
-    }
-  }, [isSelected, isAnySelected, item.position, invalidate]);
-
-  // Front/Back rotation animation
-  useEffect(() => {
-    if (innerRef.current && isSelected) {
-      gsap.to(innerRef.current.rotation, {
-        y: view === "front" ? Math.PI : 0,
-        duration: 0.8,
+        z: -1.2,
+        duration: 0.85,
         ease: "power2.inOut",
         onUpdate: invalidate,
       });
+      gsap.to(groupRef.current.scale, {
+        x: 0.55,
+        y: 0.55,
+        z: 0.55,
+        duration: 0.85,
+        onUpdate: invalidate,
+      });
+      gsap.to(innerRef.current.rotation, {
+        y: Math.PI + side * 1.2,
+        duration: 0.85,
+        ease: "power2.inOut",
+        onUpdate: invalidate,
+      });
+    } else {
+      // Return to rail — useFrame will take over positions
+      gsap.killTweensOf(groupRef.current.position);
+      gsap.killTweensOf(groupRef.current.scale);
+      gsap.killTweensOf(innerRef.current.rotation);
     }
+  }, [isSelected, isAnySelected, slotX, invalidate]);
+
+  // Front / back while focused
+  useEffect(() => {
+    if (!innerRef.current || !isSelected) return;
+    gsap.to(innerRef.current.rotation, {
+      y: view === "front" ? Math.PI : 0,
+      duration: 0.75,
+      ease: "power2.inOut",
+      onUpdate: invalidate,
+    });
   }, [view, isSelected, invalidate]);
 
   return (
-    <Float
-      speed={prefersReducedMotion ? 0 : 1.2 + item.id * 0.15}
-      rotationIntensity={prefersReducedMotion || isAnySelected ? 0 : 0.12}
-      floatIntensity={prefersReducedMotion || isAnySelected ? 0 : 0.25}
-      floatingRange={[-0.05, 0.08]}
-    >
-      <group
-        ref={groupRef}
-        position={item.position}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick(item.id);
-        }}
-        onPointerOver={() => (document.body.style.cursor = "pointer")}
-        onPointerOut={() => (document.body.style.cursor = "auto")}
-      >
-        <mesh position={[0, 1.8, 0]}>
-          <torusGeometry args={[0.1, 0.02, 16, 32, Math.PI]} />
-          <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
+    <group ref={groupRef} position={[slotX, 0, 0]}>
+      <group ref={hangerRef}>
+        <mesh position={[0, 1.78, 0]}>
+          <torusGeometry args={[0.1, 0.018, 12, 28, Math.PI]} />
+          <meshStandardMaterial color="#7a7a7a" metalness={0.85} roughness={0.25} />
         </mesh>
-        <mesh position={[0, 1.65, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, 1.2, 16]} />
-          <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
-          <group rotation={[0, 0, Math.PI / 2]} />
+        <mesh position={[0, 1.62, 0]}>
+          <cylinderGeometry args={[0.015, 0.015, 0.55, 12]} />
+          <meshStandardMaterial color="#7a7a7a" metalness={0.85} roughness={0.25} />
         </mesh>
 
-        <group ref={innerRef} rotation={[0, Math.PI, 0]}>
-          <primitive object={clonedScene} scale={1} position={[0, -0.4, 0]} />
+        <group
+          ref={innerRef}
+          rotation={[0, Math.PI, 0]}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(item.id);
+          }}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "grab";
+          }}
+        >
+          <primitive object={clonedScene} scale={1} position={[0, -0.35, 0]} />
         </group>
       </group>
-    </Float>
+    </group>
+  );
+}
+
+function Rail() {
+  return (
+    <group>
+      {/* Main rail */}
+      <mesh position={[0, 2.15, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.028, 0.028, 14, 16]} />
+        <meshStandardMaterial color="#a8a8a8" metalness={0.92} roughness={0.18} />
+      </mesh>
+      {/* End posts */}
+      <mesh position={[-6.8, 0.1, 0]}>
+        <cylinderGeometry args={[0.03, 0.03, 4.2, 16]} />
+        <meshStandardMaterial color="#a8a8a8" metalness={0.92} roughness={0.18} />
+      </mesh>
+      <mesh position={[6.8, 0.1, 0]}>
+        <cylinderGeometry args={[0.03, 0.03, 4.2, 16]} />
+        <meshStandardMaterial color="#a8a8a8" metalness={0.92} roughness={0.18} />
+      </mesh>
+    </group>
   );
 }
 
@@ -161,22 +226,23 @@ export default function GarmentRack({
   view,
   selectedColor,
   prefersReducedMotion,
+  offsetRef,
 }) {
   const { camera, invalidate } = useThree();
 
   useEffect(() => {
     if (selectedId) {
       gsap.to(camera.position, {
-        z: 6,
-        y: 0,
+        z: 5.2,
+        y: 0.15,
         duration: 1,
         ease: "power3.inOut",
         onUpdate: invalidate,
       });
     } else {
       gsap.to(camera.position, {
-        z: 8,
-        y: 0,
+        z: 7.2,
+        y: 0.2,
         duration: 1,
         ease: "power3.inOut",
         onUpdate: invalidate,
@@ -185,35 +251,16 @@ export default function GarmentRack({
   }, [selectedId, camera, invalidate]);
 
   return (
-    <group position={[0, -0.5, 0]}>
-      <mesh position={[0, 2.2, 0]}>
-        <cylinderGeometry args={[0.03, 0.03, 7, 16]} />
-        <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
-        <group rotation={[0, 0, Math.PI / 2]} />
-      </mesh>
-
-      <mesh position={[-3.4, 0, 0]}>
-        <cylinderGeometry args={[0.03, 0.03, 4.4, 16]} />
-        <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
-      </mesh>
-      <mesh position={[3.4, 0, 0]}>
-        <cylinderGeometry args={[0.03, 0.03, 4.4, 16]} />
-        <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
-      </mesh>
-
-      <mesh position={[0, -2.2, 0]}>
-        <cylinderGeometry args={[0.03, 0.03, 6.8, 16]} />
-        <meshStandardMaterial color="#999" metalness={0.9} roughness={0.1} />
-        <group rotation={[0, 0, Math.PI / 2]} />
-      </mesh>
-
-      {RACK_ITEMS.map((item) => (
+    <group position={[0, -0.35, 0]}>
+      <Rail />
+      {RACK_ITEMS.map((item, index) => (
         <HangingGarment
           key={item.id}
           item={item}
-          isSelected={selectedId === item.id}
-          isAnySelected={selectedId !== null}
-          onClick={setSelectedId}
+          index={index}
+          offsetRef={offsetRef}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
           view={view}
           selectedColor={selectedColor}
           prefersReducedMotion={prefersReducedMotion}

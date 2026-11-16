@@ -31,7 +31,7 @@ function HomePage() {
       <section className="rack">
         <div className="rack-header">
           <span className="rack-label">The Collection</span>
-          <span className="rack-count">04 Pieces</span>
+          <span className="rack-count">06 Pieces</span>
         </div>
         <Suspense fallback={<div className="showroom-loading" />}>
           <ShowroomCanvas />

@@ -222,33 +222,72 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 60vh;
+  height: 62vh;
+  perspective: 1400px;
+  perspective-origin: 50% 30%;
 }
 
-.unfold-box {
-  position: absolute;
-  z-index: 2;
-}
-
-.unfold-garment {
+.unfold-stack {
   position: relative;
-  z-index: 1;
-  width: min(380px, 68vw);
-  height: min(520px, 62vh);
+  width: min(300px, 56vw);
+  height: min(520px, 60vh);
+  transform-style: preserve-3d;
+  transform-origin: center top;
+  filter: drop-shadow(0 28px 40px rgba(26, 26, 26, 0.22));
+  will-change: transform, height;
+  overflow: hidden;
 }
 
-.unfold-coat-canvas,
-.unfold-image {
+.unfold-inner {
+  position: relative;
   width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: contain;
-  filter: drop-shadow(0 24px 36px rgba(26, 26, 26, 0.18));
+  height: min(520px, 60vh);
+  transform-style: preserve-3d;
 }
 
-.unfold-coat-canvas canvas {
-  width: 100% !important;
-  height: 100% !important;
+.unfold-fold {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(20% + 1px);
+  transform-style: preserve-3d;
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.unfold-fold-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: transparent;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.unfold-fold-image {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 500%;
+  max-width: none;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+}
+
+.unfold-fold-shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 10px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(26, 26, 26, 0.12),
+    transparent
+  );
+  opacity: 0.35;
 }
 
 .unfold-label {
@@ -1741,9 +1780,9 @@ html.lenis body {
   .unfold-stage {
     height: 55vh;
   }
-  .unfold-garment {
-    width: min(260px, 78vw);
-    height: min(360px, 48vh);
+  .unfold-stack {
+    width: min(240px, 72vw);
+    height: min(360px, 50vh);
   }
   .unfold-label {
     bottom: 40px;
@@ -1969,9 +2008,11 @@ html.lenis body {
 /* ---------- 3D Showroom ---------- */
 .showroom-canvas-wrapper {
   width: 100%;
-  height: 70vh;
+  height: 72vh;
   position: relative;
   cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
 .showroom-canvas-wrapper:active {
@@ -1980,6 +2021,122 @@ html.lenis body {
 
 .showroom-canvas-wrapper.focused {
   cursor: default;
+}
+
+.rack-browse-meta {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 4;
+  pointer-events: none;
+  text-align: center;
+  animation: rack-meta-in 0.35s ease;
+}
+
+@keyframes rack-meta-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.rack-browse-name {
+  font-family: "Bodoni Moda", serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  font-style: italic;
+  color: #1a1a1a;
+}
+
+.rack-browse-price {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #8a7a65;
+}
+
+.rack-browse-hint {
+  margin-top: 4px;
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  opacity: 0.35;
+}
+
+.showroom-tags {
+  position: absolute;
+  top: 28%;
+  right: 12%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  pointer-events: none;
+}
+
+.showroom-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  padding: 10px 8px;
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  box-shadow: 0 10px 24px rgba(26, 26, 26, 0.18);
+  transform: rotate(4deg);
+}
+
+.showroom-tag--warm {
+  background: #c45c3a;
+  color: #f5f0eb;
+}
+
+.showroom-tag--dark {
+  background: #1a1a1a;
+  color: #f5f0eb;
+  transform: rotate(-3deg);
+  margin-left: 18px;
+}
+
+.showroom-sizes {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 18px;
+}
+
+.showroom-size {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 26, 26, 0.2);
+  background: transparent;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.showroom-size.active,
+.showroom-size:hover {
+  background: #1a1a1a;
+  color: #f5f0eb;
+  border-color: #1a1a1a;
 }
 /* ---------- 3D Showroom UI Overlay ---------- */
 .showroom-ui {
