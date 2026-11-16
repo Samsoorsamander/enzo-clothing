@@ -89,6 +89,22 @@ body {
   transform: translate(-50%, -50%);
   z-index: 1;
   pointer-events: none;
+  width: min(420px, 70vw);
+  height: min(560px, 72vh);
+}
+
+.hero-coat-canvas,
+.hero-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 28px 40px rgba(26, 26, 26, 0.22));
+}
+
+.hero-coat-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .hero-sub {
@@ -217,7 +233,22 @@ body {
 .unfold-garment {
   position: relative;
   z-index: 1;
-  will-change: clip-path, transform;
+  width: min(380px, 68vw);
+  height: min(520px, 62vh);
+}
+
+.unfold-coat-canvas,
+.unfold-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 36px rgba(26, 26, 26, 0.18));
+}
+
+.unfold-coat-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .unfold-label {
@@ -1710,10 +1741,9 @@ html.lenis body {
   .unfold-stage {
     height: 55vh;
   }
-  .unfold-garment svg,
-  .unfold-garment img {
-    width: 240px;
-    height: auto;
+  .unfold-garment {
+    width: min(260px, 78vw);
+    height: min(360px, 48vh);
   }
   .unfold-label {
     bottom: 40px;
@@ -1737,9 +1767,9 @@ html.lenis body {
   .hero-line {
     font-size: clamp(3rem, 18vw, 6rem);
   }
-  .hero-garment svg {
-    width: 160px;
-    height: 210px;
+  .hero-garment {
+    width: min(240px, 72vw);
+    height: min(320px, 52vh);
   }
   .hero-sub {
     bottom: 40px;

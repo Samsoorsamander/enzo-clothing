@@ -4,6 +4,8 @@ import {
   ContactShadows,
   AdaptiveDpr,
   AdaptiveEvents,
+  Lightformer,
+  Sparkles,
 } from "@react-three/drei";
 import { Suspense, useState, useEffect } from "react";
 import GarmentRack from "./GarmentRack";
@@ -83,7 +85,7 @@ export default function ShowroomCanvas() {
           alpha: true,
           powerPreference: "high-performance",
         }}
-        frameloop="demand"
+        frameloop={prefersReducedMotion ? "demand" : "always"}
       >
         <ambientLight intensity={0.6} />
         <spotLight
@@ -110,7 +112,31 @@ export default function ShowroomCanvas() {
             selectedColor={selectedColor}
             prefersReducedMotion={prefersReducedMotion}
           />
-          <Environment preset="studio" />
+          <Environment preset="studio">
+            <Lightformer
+              intensity={1.2}
+              position={[0, 4, 2]}
+              scale={[8, 2, 1]}
+              form="rect"
+            />
+            <Lightformer
+              intensity={0.6}
+              position={[-4, 1, -2]}
+              scale={[4, 4, 1]}
+              form="ring"
+              color="#c9b99a"
+            />
+          </Environment>
+          {!isMobile && !prefersReducedMotion && (
+            <Sparkles
+              count={28}
+              scale={[8, 4, 2]}
+              size={2.5}
+              speed={0.35}
+              opacity={0.25}
+              color="#c9b99a"
+            />
+          )}
           {!isMobile && (
             <ContactShadows
               position={[0, -2.2, 0]}

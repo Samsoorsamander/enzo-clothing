@@ -1,15 +1,17 @@
-import { useRef } from "react";
+import { useRef, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+
+const UnfoldCoat3D = lazy(() => import("./UnfoldCoat3D"));
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function Unfold() {
   const section = useRef(null);
   const box = useRef(null);
-  const garment = useRef(null);
   const label = useRef(null);
+  const progressRef = useRef(0);
 
   useGSAP(
     () => {
@@ -21,36 +23,19 @@ export default function Unfold() {
           scrub: 1,
           pin: true,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            progressRef.current = self.progress;
+          },
         },
       });
 
-      // Step 1: box slides up slightly and fades
-      tl.to(box.current, { y: -40, opacity: 0, duration: 0.4 }, 0);
+      tl.to(box.current, { y: -48, opacity: 0, duration: 0.35 }, 0);
 
-      // Step 2: garment unfolds — clip-path expands from folded strip to full
-      tl.fromTo(
-        garment.current,
-        {
-          clipPath: "inset(45% 20% 45% 20% round 8px)",
-          scale: 0.8,
-          rotate: -2,
-        },
-        {
-          clipPath: "inset(0% 0% 0% 0% round 0px)",
-          scale: 1,
-          rotate: 0,
-          duration: 1,
-          ease: "power2.inOut",
-        },
-        0.2,
-      );
-
-      // Step 3: label fades in
       tl.fromTo(
         label.current,
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.3 },
-        1.1,
+        { opacity: 1, y: 0, duration: 0.35 },
+        0.55,
       );
     },
     { scope: section },
@@ -59,9 +44,8 @@ export default function Unfold() {
   return (
     <section className="unfold" ref={section}>
       <div className="unfold-stage">
-        {/* The folded box */}
         <div className="unfold-box" ref={box}>
-          <svg viewBox="0 0 160 120" width="160" height="120">
+          <svg viewBox="0 0 160 120" width="160" height="120" aria-hidden="true">
             <rect
               x="10"
               y="40"
@@ -91,13 +75,18 @@ export default function Unfold() {
           </svg>
         </div>
 
-        {/* The unfolding garment (Real Image) */}
-        <div className="unfold-garment" ref={garment}>
-          <img
-            src="/images/long-coat.jpg"
-            alt="Enzo Long Coat"
-            className="unfold-image"
-          />
+        <div className="unfold-garment">
+          <Suspense
+            fallback={
+              <img
+                src="/images/long-coat.png"
+                alt="Enzo Long Coat"
+                className="unfold-image"
+              />
+            }
+          >
+            <UnfoldCoat3D progressRef={progressRef} />
+          </Suspense>
         </div>
       </div>
 

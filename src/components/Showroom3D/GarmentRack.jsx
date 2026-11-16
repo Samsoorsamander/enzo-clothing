@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, Float } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { RACK_ITEMS } from "./ShowroomCanvas";
@@ -121,30 +121,37 @@ function HangingGarment({
   }, [view, isSelected, invalidate]);
 
   return (
-    <group
-      ref={groupRef}
-      position={item.position}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick(item.id);
-      }}
-      onPointerOver={() => (document.body.style.cursor = "pointer")}
-      onPointerOut={() => (document.body.style.cursor = "auto")}
+    <Float
+      speed={prefersReducedMotion ? 0 : 1.2 + item.id * 0.15}
+      rotationIntensity={prefersReducedMotion || isAnySelected ? 0 : 0.12}
+      floatIntensity={prefersReducedMotion || isAnySelected ? 0 : 0.25}
+      floatingRange={[-0.05, 0.08]}
     >
-      <mesh position={[0, 1.8, 0]}>
-        <torusGeometry args={[0.1, 0.02, 16, 32, Math.PI]} />
-        <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
-      </mesh>
-      <mesh position={[0, 1.65, 0]}>
-        <cylinderGeometry args={[0.02, 0.02, 1.2, 16]} />
-        <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
-        <group rotation={[0, 0, Math.PI / 2]} />
-      </mesh>
+      <group
+        ref={groupRef}
+        position={item.position}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(item.id);
+        }}
+        onPointerOver={() => (document.body.style.cursor = "pointer")}
+        onPointerOut={() => (document.body.style.cursor = "auto")}
+      >
+        <mesh position={[0, 1.8, 0]}>
+          <torusGeometry args={[0.1, 0.02, 16, 32, Math.PI]} />
+          <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
+        </mesh>
+        <mesh position={[0, 1.65, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 1.2, 16]} />
+          <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
+          <group rotation={[0, 0, Math.PI / 2]} />
+        </mesh>
 
-      <group ref={innerRef} rotation={[0, Math.PI, 0]}>
-        <primitive object={clonedScene} scale={1} position={[0, -0.4, 0]} />
+        <group ref={innerRef} rotation={[0, Math.PI, 0]}>
+          <primitive object={clonedScene} scale={1} position={[0, -0.4, 0]} />
+        </group>
       </group>
-    </group>
+    </Float>
   );
 }
 

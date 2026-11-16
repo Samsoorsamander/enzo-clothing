@@ -1,7 +1,9 @@
-import { useRef } from "react";
+import { useRef, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+
+const HeroCoat3D = lazy(() => import("./HeroCoat3D"));
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -10,6 +12,7 @@ export default function Hero() {
   const line1 = useRef(null);
   const line2 = useRef(null);
   const garment = useRef(null);
+  const progressRef = useRef(0);
 
   useGSAP(
     () => {
@@ -21,18 +24,20 @@ export default function Hero() {
           scrub: 1,
           pin: true,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            progressRef.current = self.progress;
+          },
         },
       });
 
-      // Garment drops from above and scales slightly
+      // Coat stays visible; scroll settles it into place with a soft drop
       tl.fromTo(
         garment.current,
-        { y: window.innerWidth < 768 ? -200 : -300, opacity: 0, scale: 0.9 },
-        { y: 0, opacity: 1, scale: 1, ease: "power2.out" },
+        { y: window.innerWidth < 768 ? -40 : -64, opacity: 0.92 },
+        { y: 0, opacity: 1, ease: "power2.out" },
         0,
       );
 
-      // Headline lines split apart
       tl.to(line1.current, { x: -120, ease: "power2.inOut" }, 0.2);
       tl.to(line2.current, { x: 120, ease: "power2.inOut" }, 0.2);
     },
@@ -51,12 +56,17 @@ export default function Hero() {
       </div>
 
       <div className="hero-garment" ref={garment}>
-        {/* Real Image replacing the SVG */}
-        <img
-          src="/images/hero-coat.jpg"
-          alt="Enzo Signature Coat"
-          className="hero-image"
-        />
+        <Suspense
+          fallback={
+            <img
+              src="/images/hero-coat.png"
+              alt="Enzo Signature Coat"
+              className="hero-image"
+            />
+          }
+        >
+          <HeroCoat3D progressRef={progressRef} />
+        </Suspense>
       </div>
 
       <p className="hero-sub">New Collection — SS26</p>
