@@ -15,27 +15,22 @@ import OrderSuccess from "./components/OrderSuccess";
 import Contact from "./components/Contact";
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
+import CollectionRack from "./components/CollectionRack";
 
 // Lazy load heavier components
 const About = lazy(() => import("./pages/About"));
-const ShowroomCanvas = lazy(
-  () => import("./components/Showroom3D/ShowroomCanvas"),
-);
 
 function HomePage() {
   return (
     <>
       <Hero />
 
-      {/* The New 3D Showroom Rack */}
-      <section className="rack">
+      <section className="rack" id="shop">
         <div className="rack-header">
           <span className="rack-label">The Collection</span>
           <span className="rack-count">06 Pieces</span>
         </div>
-        <Suspense fallback={<div className="showroom-loading" />}>
-          <ShowroomCanvas />
-        </Suspense>
+        <CollectionRack />
       </section>
 
       <Marquee
